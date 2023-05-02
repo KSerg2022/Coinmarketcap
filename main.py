@@ -26,13 +26,13 @@ def main(api_cmc: str):
     # get info from coinmarketcap for cryptocurrencies
     cryptocurrencies_data = get_cryptocurrency(api_cmc, set(cryptocurrencies))
 
-    # dump data to json file
+    # dump all data to json file
     wright_to_json(cryptocurrencies_data)
 
-    # load data from json file
+    # load all data from json file
     # cryptocurrencies_data = load_data_from_file()
 
-    # parse data for using
+    # parse all data for using
     cryptocurrencies_data = parse_cryptocurrencies_data(cryptocurrencies_data)
 
     # dump data to xlsx file
