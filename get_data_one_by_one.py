@@ -5,8 +5,19 @@ from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from dateutil import parser
 
+from settings import currencies_symbols_by_one, additional_currencies_symbols_by_one, currencies_symbols_spec_by_one
 
-def get_cryptocurrency(api_cmc, symbols):
+
+def normalize_data(data: list[str]) -> list[str]:
+    return [value.upper() for value in data]
+
+
+symbols = normalize_data(currencies_symbols_by_one) \
+         + normalize_data(additional_currencies_symbols_by_one) \
+         + currencies_symbols_spec_by_one
+
+
+def get_cryptocurrency(api_cmc: str) -> list[dict]:
     """"""
     url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'  # Latest quotes
 
@@ -39,7 +50,7 @@ def get_cryptocurrency(api_cmc, symbols):
     return cryptocurrencies
 
 
-def parse_cryptocurrencies_data(currencies_data: dict):
+def parse_cryptocurrencies_data(currencies_data: list[dict]) -> dict[dict]:
     """Parse weather data"""
     currencies = {}
     for currency_ in currencies_data:
@@ -78,7 +89,6 @@ def parse_cryptocurrencies_data(currencies_data: dict):
             # 'total_supply': total_supply,
             # 'market_cap': market_cap,
             # 'fully_diluted_market_cap': fully_diluted_market_cap,
-
         }
 
         currencies[currency_symbol] = data
