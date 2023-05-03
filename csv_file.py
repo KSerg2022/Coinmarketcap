@@ -5,7 +5,7 @@ import csv
 from settings import base_dir, time_stamp
 
 
-def write_csv_file(csv_table, delimiter=','):
+def write_csv_file(csv_table: list[list], delimiter: str = ','):
     """
     Input: Nested list csv_table and a string file_name
     Action: Write fields in csv_table into a comma-separated CSV file with the name file_name
@@ -16,10 +16,9 @@ def write_csv_file(csv_table, delimiter=','):
         csv_writer = csv.writer(csvfile, delimiter=delimiter, quoting=csv.QUOTE_MINIMAL)
         for row in csv_table:
             csv_writer.writerow(row)
-    return True
 
 
-def create_table(data):
+def create_table(data: dict[dict]) -> list[list]:
     """"""
     table = []
     for currency in data:
@@ -31,6 +30,6 @@ def create_table(data):
     return table
 
 
-def create_csv_file(data: dict[str, dict]):
+def create_csv_file(data: dict[dict]):
     csv_table = create_table(data)
     write_csv_file(csv_table)
