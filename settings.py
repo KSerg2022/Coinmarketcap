@@ -17,14 +17,14 @@ currencies_symbols_by_one = [
     'ETHPAD', 'GAIN', 'BGS', 'HINATA', 'TON', 'SOL', 'GAME', 'LPOOL', 'ARTEM', 'AE', 'OKB', 'BNB', 'SLP', 'KOM', 'AVAX',
 ]
 
-# here can add currency for query one by one
+### here can add currency for query one by one
 additional_currencies_symbols_by_one = []
 
 # do not change for query one by one
 currencies_symbols_spec_by_one = ['CFi', ]
 
 
-# base currencies for query by several.
+### base currencies for query by several.
 currencies_symbols_by_several = [
     'AGV', 'TICKET', 'FS', 'BEAM', 'YOM', 'LUNA', 'SOLC', 'ATOM', 'KZEN', 'LUNC', 'VENT', 'CAKE', 'MCRT', 'ESCROW',
     'AVXL', 'ONG', 'BRO', 'SAVG', 'KDA', 'ETH', 'BSCPAD', 'SLIM', 'SAMO', 'FLM', 'USDT', 'LTC', 'ICP', 'CFX',

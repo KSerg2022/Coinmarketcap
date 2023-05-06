@@ -15,11 +15,11 @@ load_dotenv()
 
 def main(api_cmc: str):
     """"""
-    # for query one by one
+    ## for query one by one
     # get info from coinmarketcap for cryptocurrencies for query one by one
     # cryptocurrencies_data = get_cryptocurrency_onr_by_one(api_cmc)
 
-    # for query by several
+    #### for query by several
     # get info from coinmarketcap for cryptocurrencies for query by several
     cryptocurrencies_data = get_cryptocurrency_by_several(api_cmc)
 
@@ -29,11 +29,11 @@ def main(api_cmc: str):
     # load all data from json file
     # cryptocurrencies_data = load_data_from_file()
 
-    # for query one by one
+    ## for query one by one
     # parse all data for using for query one by one
     # cryptocurrencies_data = parse_cryptocurrencies_data_one_by_one(cryptocurrencies_data)
 
-    # for query by several
+    #### for query by several
     # parse all data for using for query by several
     cryptocurrencies_data = parse_cryptocurrencies_data_by_several(cryptocurrencies_data)
 
