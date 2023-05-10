@@ -62,7 +62,7 @@ def parse_cryptocurrencies_data(currencies_data: dict[dict], symbol: str) -> dic
     try:
         currencies_data['data'][symbol]
     except KeyError:
-        data = fill_values_if_is_not_symbol(date)
+        data = fill_values_if_is_not_symbol(date, symbol)
         return data
 
     id = currencies_data['data'][symbol]['id']
@@ -93,14 +93,14 @@ def parse_cryptocurrencies_data(currencies_data: dict[dict], symbol: str) -> dic
     return data
 
 
-def fill_values_if_is_not_symbol(date: str) -> dict[str, str]:
+def fill_values_if_is_not_symbol(date: str, symbol: str) -> dict[str, str]:
     """"""
     result = {
         'data': parser.isoparse(date).strftime("%d-%m-%Y %H:%M:%S"),
         'id': 'not in CMC',
         'name': '---',
-        'symbol': '---',
-        'price': '---',
+        'symbol': symbol,
+        'price': 0,
 
         # additional data
         # 'circulating_supply': '---',
