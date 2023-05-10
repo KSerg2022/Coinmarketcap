@@ -3,8 +3,7 @@ import os
 
 from dotenv import load_dotenv
 
-from get_data import (get_cryptocurrency_onr_by_one, parse_cryptocurrencies_data_one_by_one,
-                      get_cryptocurrency_by_several, parse_cryptocurrencies_data_by_several)
+from get_data import get_cryptocurrency, parse_cryptocurrencies
 
 from json_file import wright_to_json, load_data_from_file
 from xlsx_file import create_xlsx_file
@@ -15,13 +14,8 @@ load_dotenv()
 
 def main(api_cmc: str):
     """"""
-    ## for query one by one
-    # get info from coinmarketcap for cryptocurrencies for query one by one
-    # cryptocurrencies_data = get_cryptocurrency_onr_by_one(api_cmc)
-
-    #### for query by several
-    # get info from coinmarketcap for cryptocurrencies for query by several
-    cryptocurrencies_data = get_cryptocurrency_by_several(api_cmc)
+    # get info from coinmarketcap for cryptocurrencies
+    cryptocurrencies_data = get_cryptocurrency(api_cmc)
 
     # dump all data to json file
     wright_to_json(cryptocurrencies_data)
@@ -29,19 +23,14 @@ def main(api_cmc: str):
     # load all data from json file
     # cryptocurrencies_data = load_data_from_file()
 
-    ## for query one by one
-    # parse all data for using for query one by one
-    # cryptocurrencies_data = parse_cryptocurrencies_data_one_by_one(cryptocurrencies_data)
-
-    #### for query by several
-    # parse all data for using for query by several
-    cryptocurrencies_data = parse_cryptocurrencies_data_by_several(cryptocurrencies_data)
+    # parse all data for using
+    cryptocurrencies_data = parse_cryptocurrencies(cryptocurrencies_data)
 
     # dump data to xlsx file
     create_xlsx_file(cryptocurrencies_data)
 
     # dump data to csv file
-    create_csv_file(cryptocurrencies_data)
+    # create_csv_file(cryptocurrencies_data)
 
 
 if __name__ == '__main__':
