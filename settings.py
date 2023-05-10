@@ -5,9 +5,8 @@ from pathlib import Path
 base_dir = Path(__file__).parent
 time_stamp = datetime.datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
 
-
-### base currencies for query by several.
-currencies_symbols_by_several = [
+# base currencies for query.
+currencies_symbols = [
     'AGV', 'TICKET', 'FS', 'BEAM', 'YOM', 'LUNA', 'SOLC', 'ATOM', 'KZEN', 'LUNC', 'VENT', 'CAKE', 'MCRT', 'ESCROW',
     'AVXL', 'ONG', 'BRO', 'SAVG', 'KDA', 'ETH', 'BSCPAD', 'SLIM', 'SAMO', 'FLM', 'USDT', 'LTC', 'ICP', 'CFX',
     'POLS', 'DOT', 'XRP', 'ETC', 'ONT', 'EOS', 'MATE', 'POOLX', 'ETHW', 'SEON', 'XCH', 'FIRO', 'RVN', 'PEAK', 'BONK',
@@ -18,8 +17,8 @@ currencies_symbols_by_several = [
     'HINATA', 'RAZR',
 ]
 
-# here can add currency for query by several
-additional_currencies_symbols_by_several = []
+# here can add currency for query
+additional_currencies_symbols = []
 
-# do not change for query by several
-currencies_symbols_spec_by_several = ['CFi', ]
+# do not change for query
+currencies_symbols_spec = ['CFi', ]

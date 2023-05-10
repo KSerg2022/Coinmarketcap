@@ -1,23 +1,20 @@
 """"""
-import time
-
 from requests import Session
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 from dateutil import parser
 
-
-from settings import (currencies_symbols_by_several,
-                      additional_currencies_symbols_by_several,
-                      currencies_symbols_spec_by_several)
+from settings import (currencies_symbols,
+                      additional_currencies_symbols,
+                      currencies_symbols_spec)
 
 
 def normalize_data(data: list[str]) -> list[str]:
     return [value.upper() for value in data]
 
 
-SYMBOLS = normalize_data(currencies_symbols_by_several) \
-                     + normalize_data(additional_currencies_symbols_by_several) \
-                     + currencies_symbols_spec_by_several
+SYMBOLS = normalize_data(currencies_symbols) \
+          + normalize_data(additional_currencies_symbols) \
+          + currencies_symbols_spec
 
 
 def get_cryptocurrency(api_cmc: str) -> dict[dict]:
@@ -94,6 +91,7 @@ def parse_cryptocurrencies_data(currencies_data: dict[dict], symbol: str) -> dic
     }
 
     return data
+
 
 def fill_values_if_is_not_symbol(date: str) -> dict[str, str]:
     """"""
