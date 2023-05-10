@@ -14,7 +14,7 @@ currencies_symbols = [
     'HT', 'WAG', 'LZ', 'FTM', 'EJS', 'GZONE', 'AION', 'GRT', 'XAVA', 'DIA', 'DASH', 'SERO', 'PPAD', 'FLOW', 'USDC',
     'ERG', 'ALPH', 'XLM', 'BLP', 'IDIA', 'TRBL', 'GARI', 'MATIC', 'BSCS', 'PBR', 'SWAP', 'CELO', 'DAL', 'IRON', 'ZEC',
     'ETHPAD', 'GAIN', 'BGS', 'TON', 'SOL', 'GAME', 'LPOOL', 'ARTEM', 'AE', 'OKB', 'BNB', 'SLP', 'KOM', 'AVAX',
-    'HINATA', 'RAZR',
+    'HINATA', 'RAZR', 'LUNC', 'ATLAS', 'STARS',
 ]
 
 # here can add currency for query
