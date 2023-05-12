@@ -1,16 +1,16 @@
 import os
-import json
-import requests
-import time
-import hashlib
-import hmac
+# import json
+# import requests
+# import time
+# import hashlib
+# import hmac
 
 from dotenv import load_dotenv
 load_dotenv()
 apiKey = os.environ.get('MEXC_API_KEY')
 apiSecret = os.environ.get('MEXC_API_SECRET_KEY')
 
-
+#
 # from MexcClient.client import MexcClient
 # client = MexcClient(api_key='apiKey', api_secret='apiSecret')
 #
