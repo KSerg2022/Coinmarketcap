@@ -50,10 +50,15 @@ headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 
 url = '/spot/accounts'
 query_param = ''
-# for `gen_sign` implementation, refer to section `Authentication` above
+
 sign_headers = gen_sign('GET', prefix + url, query_param)
 headers.update(sign_headers)
 r = requests.request('GET', host + prefix + url, headers=headers)
-print(r.json())
-for symbol in r.json():
+
+currencies = r.json()
+# print(currencies)
+currencies = sorted(currencies, key=lambda x: x['currency'])
+
+
+for symbol in currencies:
     print(f"{symbol['currency']} = {float(symbol['available']) + float(symbol['locked'])}")
