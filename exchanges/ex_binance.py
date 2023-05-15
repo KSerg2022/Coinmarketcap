@@ -2,14 +2,12 @@
 https://dev.binance.vision/t/ip-whitelist-does-not-have-effect/2767
 """
 import os
-import  json
+import json
 
 from dotenv import load_dotenv
 load_dotenv()
 
-
 from binance.spot import Spot
-
 
 from settings import base_dir, time_stamp
 

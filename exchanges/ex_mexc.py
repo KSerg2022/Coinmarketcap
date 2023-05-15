@@ -7,23 +7,8 @@ import os
 
 from dotenv import load_dotenv
 load_dotenv()
-apiKey = os.environ.get('MEXC_API_KEY')
-apiSecret = os.environ.get('MEXC_API_SECRET_KEY')
-
-#
-# from MexcClient.client import MexcClient
-# client = MexcClient(api_key='apiKey', api_secret='apiSecret')
-#
-# print(client)
-# print(client.server_time())
-# print(client.check_connection())
-# print(client.base_url)
-# # print(client.exchange_info())
-# print(client.load_balances())
 
 
-
-print('~' * 50)
 from datetime import datetime
 import urllib.parse
 
@@ -32,27 +17,44 @@ import requests
 from MexcClient.Utils.Signature import generate_signature
 
 
-headers = {"X-MEXC-APIKEY": apiKey, "Content-Type": "application/json"}
-params = {"timestamp": int(datetime.now().timestamp()) * 1000}
+class ExMexc:
+    """"""
+    host = "https://api.mexc.com"
+    prefix = "/api/v3/"
 
-str_params = urllib.parse.urlencode(params)
-signature = generate_signature(apiSecret.encode(), str_params.encode())
-params["signature"] = signature
+    def __init__(self):
+        self.apiKey = os.environ.get('MEXC_API_KEY')
+        self.apiSecret = os.environ.get('MEXC_API_SECRET_KEY')
+        self.headers = {"X-MEXC-APIKEY": self.apiKey, "Content-Type": "application/json"}
+
+    def gen_sign(self):
+        """"""
+        params = {"timestamp": int(datetime.now().timestamp()) * 1000}
+        str_params = urllib.parse.urlencode(params)
+        signature = generate_signature(self.apiSecret.encode(), str_params.encode())
+        params["signature"] = signature
+        return params
+
+    def get_account(self):
+        """"""
+        url = 'account'
+        currencies = self._get_request(url)
+        # print(currencies)
+
+        return sorted(currencies['balances'], key=lambda x: x['asset'])
+
+    def _get_request(self, url):
+        """"""
+        sign_params = self.gen_sign()
+        r = requests.request('GET', self.host + self.prefix + url, headers=self.headers, params=sign_params)
+        return r.json()
 
 
-host = "https://api.mexc.com"
-prefix = "/api/v3/"
-url = 'account'
-r = requests.request('GET', host + prefix + url, headers=headers, params=params)
-# print(r.json())
+if __name__ == '__main__':
+    currencies = ExMexc()
 
-currencies = r.json()
-print(currencies)
-# print(currencies.keys())
-currencies = sorted(currencies['balances'], key=lambda x: x['asset'])
-
-for symbol in currencies:
-    print(f"{symbol['asset']} = {float(symbol['free']) + float(symbol['locked'])}")
+    for symbol in currencies.get_account():
+        print(f"{symbol['asset']} = {float(symbol['free']) + float(symbol['locked'])}")
 
 
 
