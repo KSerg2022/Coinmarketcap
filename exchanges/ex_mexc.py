@@ -6,8 +6,8 @@ import os
 # import hmac
 
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 from datetime import datetime
 import urllib.parse
@@ -38,10 +38,9 @@ class ExMexc:
     def get_account(self):
         """"""
         url = 'account'
-        currencies = self._get_request(url)
-        # print(currencies)
-
-        return sorted(currencies['balances'], key=lambda x: x['asset'])
+        currencies_account = self._get_request(url)
+        currencies = self._normalize_data(currencies_account)
+        return currencies
 
     def _get_request(self, url):
         """"""
@@ -49,12 +48,21 @@ class ExMexc:
         r = requests.request('GET', self.host + self.prefix + url, headers=self.headers, params=sign_params)
         return r.json()
 
+    @staticmethod
+    def _normalize_data(currencies_account):
+        """"""
+        currencies = []
+        for symbol in currencies_account['balances']:
+            currencies.append({
+                'coin': symbol['asset'],
+                'bal': float(symbol['free']) + float(symbol['locked'])
+            })
+        return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
+
 
 if __name__ == '__main__':
     currencies = ExMexc()
+    currencies.get_account()
 
-    for symbol in currencies.get_account():
-        print(f"{symbol['asset']} = {float(symbol['free']) + float(symbol['locked'])}")
-
-
-
+    # for symbol in currencies.get_account():
+    #     print(f"{symbol['coin']} = {float(symbol['bal']) }")
