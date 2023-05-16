@@ -1,12 +1,10 @@
 import os
-import json
 import requests
 import time
 import hashlib
 import hmac
 
 from dotenv import load_dotenv
-
 load_dotenv()
 
 
@@ -29,36 +27,40 @@ class ExGate:
         m.update((payload_string or "").encode('utf-8'))
         hashed_payload = m.hexdigest()
         s = '%s\n%s\n%s\n%s\n%s' % (method, url, query_string or "", hashed_payload, t)
-        # print('1 - ', s)
         sign = hmac.new(self.secret.encode('utf-8'), s.encode('utf-8'), hashlib.sha512).hexdigest()
-        # print('2 - ', sign)
         return {'KEY': self.key, 'Timestamp': str(t), 'SIGN': sign}
 
     def get_total_balance(self):
-        """"""
+        """in USDT"""
         url = '/wallet/total_balance'
         return self._get_request(url)
 
-    def get_accounts(self):
+    def get_account(self):
         """"""
         url = '/spot/accounts'
-        currencies = self._get_request(url)
-        # print(currencies)
-
-        return sorted(currencies, key=lambda x: x['currency'])
+        currencies_account = self._get_request(url)
+        currencies = self._normalize_data(currencies_account)
+        return currencies
 
     def _get_request(self, url):
         """"""
         sign_headers = self.gen_sign('GET', self.prefix + url, self.query_param)
         self.headers.update(sign_headers)
         r = requests.request('GET', self.host + self.prefix + url, headers=self.headers)
-        # print(r.json())
-
         return r.json()
+
+    @staticmethod
+    def _normalize_data(currencies_account):
+        """"""
+        currencies = []
+        for symbol in currencies_account:
+            currencies.append({
+                'coin': symbol['currency'],
+                'bal': float(symbol['available']) + float(symbol['locked'])
+            })
+        return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':
     currencies = ExGate()
-    # print(currencies.get_total_balance())
-    for symbol in currencies.get_accounts():
-        print(f"{symbol['currency']} = {float(symbol['available']) + float(symbol['locked'])}")
+    currencies.get_account()
