@@ -80,7 +80,7 @@ def parse_cryptocurrencies_data(currencies_data: dict[dict], symbol: str) -> dic
         'data': parser.isoparse(date).strftime("%d-%m-%Y %H:%M:%S"),
         'id': id,
         'name': name,
-        'symbol': symbol,
+        'coin': symbol,
         'price': price,
 
         # additional data
@@ -99,7 +99,7 @@ def fill_values_if_is_not_symbol(date: str, symbol: str) -> dict[str, str]:
         'data': parser.isoparse(date).strftime("%d-%m-%Y %H:%M:%S"),
         'id': 'not in CMC',
         'name': '---',
-        'symbol': symbol,
+        'coin': symbol,
         'price': 0,
 
         # additional data
