@@ -20,7 +20,8 @@ class ExOkx:
                        'passphrase': self.passphrase,
                        'domain': self.host,
                        'use_server_time': False,
-                       'flag': '0'}
+                       'flag': '0',
+                       'debug': False}
 
         self.account = Account.AccountAPI(**self.params)
         self.funding = Funding.FundingAPI(**self.params)
@@ -44,6 +45,28 @@ class ExOkx:
     @staticmethod
     def _normalize_data(currencies_trading, currencies_funding):
         """"""
+        currencies = []
+        for symbol in currencies_trading['data'][0]['details'] + currencies_funding['data']:
+            if y := [x for x in currencies if x['coin'] == symbol['ccy']]:
+                currencies[currencies.index(y[0])] = {'coin': symbol['ccy'],
+                                                      'bal': y[0]['bal'] + float(symbol['bal'])}
+            else:
+                try:
+                    currencies.append({
+                        'coin': symbol['ccy'],
+                        'bal': float(symbol['eq'])
+                    })
+                except KeyError:
+                    currencies.append({
+                        'coin': symbol['ccy'].upper(),
+                        'bal': float(symbol['bal'])
+                    })
+        # print('currencies -- ')
+        # print({os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])})
+
+
+
+
         q = defaultdict(list)
         for symbol in currencies_trading['data'][0]['details']:
             q[symbol['ccy']].append(float(symbol['eq']))
@@ -57,7 +80,7 @@ class ExOkx:
         currencies = []
         for currency, value in q.items():
             currencies.append({
-                'coin': currency,
+                'coin': currency.upper(),
                 'bal': value[0]
             })
         return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}

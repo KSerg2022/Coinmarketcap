@@ -55,7 +55,7 @@ class ExGate:
         currencies = []
         for symbol in currencies_account:
             currencies.append({
-                'coin': symbol['currency'],
+                'coin': symbol['currency'].upper(),
                 'bal': float(symbol['available']) + float(symbol['locked'])
             })
         return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}

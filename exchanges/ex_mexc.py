@@ -54,7 +54,7 @@ class ExMexc:
         currencies = []
         for symbol in currencies_account['balances']:
             currencies.append({
-                'coin': symbol['asset'],
+                'coin': symbol['asset'].upper(),
                 'bal': float(symbol['free']) + float(symbol['locked'])
             })
         return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}

@@ -33,7 +33,6 @@ class ExBybit:
         account_margin = self.get_account_margin()
         currencies = self._normalize_data(account_spot,
                                           account_margin)
-        print(currencies)
         return currencies
 
     @staticmethod
@@ -52,7 +51,7 @@ class ExBybit:
         currencies = []
         for currency, value in q.items():
             currencies.append({
-                'coin': currency,
+                'coin': currency.upper(),
                 'bal': value[0]
             })
         return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
@@ -60,4 +59,5 @@ class ExBybit:
 
 if __name__ == '__main__':
     c = ExBybit()
-    currencies = c.get_account()
+    r = currencies = c.get_account()
+    print(r)
