@@ -12,7 +12,8 @@ class DataFromExchangers:
     """"""
     def __init__(self):
         self.currencies = []
-        self.exchangers = [ExLbank().get_account,
+        self.exchangers = [
+            ExLbank().get_account,
                            ExMexc().get_account,
                            ExGate().get_account,
                            ExBybit().get_account,

@@ -6,24 +6,24 @@ from copy import deepcopy
 from get_data import get_cryptocurrency, parse_cryptocurrencies
 from exchanges.exchangers import DataFromExchangers
 
-
 from json_file import wright_to_json, load_data_from_file
 # from xlsx_file import create_xlsx
 # from csv_file import create_csv_file
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
 def get_data_from_cmc(api_cmc: str):
     ## get info from coinmarketcap for cryptocurrencies
-    cryptocurrencies_data = get_cryptocurrency(api_cmc)
+    # cryptocurrencies_data = get_cryptocurrency(api_cmc)
 
     ## dump all data to json file
-    wright_to_json(cryptocurrencies_data)
+    # wright_to_json(cryptocurrencies_data)
 
     ## load all data from json file
-    # cryptocurrencies_data = load_data_from_file()
+    cryptocurrencies_data = load_data_from_file()
 
     ## parse all data for using
     cryptocurrencies_data = parse_cryptocurrencies(cryptocurrencies_data)
@@ -37,19 +37,36 @@ def get_data_from_exchangers():
 
 def get_aggregation_data(data_from_cmc, data_from_exchangers):
     """"""
+    time_data = set()
+
     aggregation_data = deepcopy(data_from_exchangers)
     for exchanger in aggregation_data:
         for currency in list(exchanger.values())[0]:
             try:
                 currency.update(data_from_cmc[currency['coin']])
+                time_data.add(currency['coin'])
             except KeyError:
                 currency.update({'data': '---', 'id': '---', 'name': '---', 'price': 0})
+
+    w = []
+    for symbol, value in data_from_cmc.items():
+        if symbol in time_data:
+            continue
+        else:
+            w.append({'coin': symbol,
+                      'bal': 0,
+                      'data': value['data'],
+                      'id': value['id'],
+                      'name': value['name'],
+                      'price': value['price']
+                      })
+
+    aggregation_data.append({'others': w})
 
     return aggregation_data
 
 
 import pandas as pd
-
 
 from settings import base_dir, time_stamp
 
@@ -89,6 +106,7 @@ def main(api_cmc: str):
     print(aggregation_data)
 
     create_xlsx(aggregation_data)
+
 
 if __name__ == '__main__':
     api_cmc = os.environ.get('API_COINMARCETCAP')
