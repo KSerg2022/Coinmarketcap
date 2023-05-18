@@ -1,9 +1,4 @@
 import os
-from datetime import datetime
-import urllib.parse
-import requests
-
-from MexcClient.Utils.Signature import generate_signature
 
 from collections import defaultdict
 from dotenv import load_dotenv

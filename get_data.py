@@ -45,13 +45,14 @@ def get_cryptocurrency(api_cmc: str) -> dict[dict]:
     return response.json()
 
 
-def parse_cryptocurrencies(currencies_data: dict[dict]) -> dict[dict[str, str]]:
+def parse_cryptocurrencies(currencies_data: dict[dict]) -> dict[str, dict[str, str]]:
     """Parse weather data"""
     currencies = {}
     for symbol in SYMBOLS:
         result = parse_cryptocurrencies_data(currencies_data, symbol)
-
-        currencies[symbol] = result
+        if symbol == 'MIOTA':
+            symbol = 'IOTA'
+        currencies[symbol.upper()] = result
     return dict(sorted(currencies.items()))
 
 
@@ -80,7 +81,7 @@ def parse_cryptocurrencies_data(currencies_data: dict[dict], symbol: str) -> dic
         'data': parser.isoparse(date).strftime("%d-%m-%Y %H:%M:%S"),
         'id': id,
         'name': name,
-        'coin': symbol,
+        'coin': symbol.upper(),
         'price': price,
 
         # additional data
@@ -99,7 +100,7 @@ def fill_values_if_is_not_symbol(date: str, symbol: str) -> dict[str, str]:
         'data': parser.isoparse(date).strftime("%d-%m-%Y %H:%M:%S"),
         'id': 'not in CMC',
         'name': '---',
-        'coin': symbol,
+        'coin': symbol.upper(),
         'price': 0,
 
         # additional data

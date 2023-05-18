@@ -18,7 +18,7 @@ currencies_symbols = [
 ]
 
 # here can add currency for query
-additional_currencies_symbols = ['XCC', 'POOLZ', 'RD', 'SOLO', 'GALA', 'IOTA']
+additional_currencies_symbols = ['XCC', 'POOLZ', 'RD', 'SOLO', 'GALA', ]
 
 # do not change for query
 currencies_symbols_spec = ['CFi', ]

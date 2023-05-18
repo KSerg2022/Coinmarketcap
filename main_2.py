@@ -6,7 +6,8 @@ from copy import deepcopy
 from get_data import get_cryptocurrency, parse_cryptocurrencies
 from exchanges.exchangers import DataFromExchangers
 
-from json_file import wright_to_json, load_data_from_file
+from json_file import (wright_to_json_cmc_data, load_cmc_data_from_file,
+                       wright_to_json_exchangers_data, load_exchangers_data_from_file)
 # from xlsx_file import create_xlsx
 # from csv_file import create_csv_file
 
@@ -17,13 +18,13 @@ load_dotenv()
 
 def get_data_from_cmc(api_cmc: str):
     ## get info from coinmarketcap for cryptocurrencies
-    # cryptocurrencies_data = get_cryptocurrency(api_cmc)
+    cryptocurrencies_data = get_cryptocurrency(api_cmc)
 
     ## dump all data to json file
-    # wright_to_json(cryptocurrencies_data)
+    wright_to_json_cmc_data(cryptocurrencies_data)
 
     ## load all data from json file
-    cryptocurrencies_data = load_data_from_file()
+    # cryptocurrencies_data = load_cmc_data_from_file()
 
     ## parse all data for using
     cryptocurrencies_data = parse_cryptocurrencies(cryptocurrencies_data)
@@ -32,21 +33,32 @@ def get_data_from_cmc(api_cmc: str):
 
 
 def get_data_from_exchangers():
-    return DataFromExchangers().get_data_from_exchangers()
+    ## get info from exchangers for cryptocurrencies
+    exchangers_data = DataFromExchangers().get_data_from_exchangers()
+
+    ## dump all data to json file
+    wright_to_json_exchangers_data(exchangers_data)
+
+    ## load all data from json file
+    # exchangers_data = load_exchangers_data_from_file()
+
+    return exchangers_data
 
 
 def get_aggregation_data(data_from_cmc, data_from_exchangers):
     """"""
     time_data = set()
+    print(data_from_cmc)
 
     aggregation_data = deepcopy(data_from_exchangers)
     for exchanger in aggregation_data:
         for currency in list(exchanger.values())[0]:
             try:
                 currency.update(data_from_cmc[currency['coin']])
+                currency.update({'total': float(currency['bal']) * float(currency['price'])})
                 time_data.add(currency['coin'])
             except KeyError:
-                currency.update({'data': '---', 'id': '---', 'name': '---', 'price': 0})
+                currency.update({'data': '---', 'id': '---', 'name': '---', 'price': 0, 'total': 0})
 
     w = []
     for symbol, value in data_from_cmc.items():
@@ -58,7 +70,8 @@ def get_aggregation_data(data_from_cmc, data_from_exchangers):
                       'data': value['data'],
                       'id': value['id'],
                       'name': value['name'],
-                      'price': value['price']
+                      'price': value['price'],
+                      'total': 0
                       })
 
     aggregation_data.append({'others': w})
@@ -103,7 +116,7 @@ def main(api_cmc: str):
     data_from_exchangers = get_data_from_exchangers()
 
     aggregation_data = get_aggregation_data(data_from_cmc, data_from_exchangers)
-    print(aggregation_data)
+    # print(aggregation_data)
 
     create_xlsx(aggregation_data)
 
