@@ -11,6 +11,7 @@ load_dotenv()
 
 # from binance.spot import Spot
 from binance.client import Client
+from binance.exceptions import BinanceAPIException
 
 from settings import base_dir, time_stamp
 
@@ -25,12 +26,23 @@ class ExBinance:
         self.coin_m = Client(api_key=self.api_key, api_secret=self.api_secret)
 
     def get_futures_coin_account(self):
-        futures_coin_account = self.coin_m.futures_coin_account()
+        futures_coin_account = self._get_response(self.coin_m.futures_coin_account)
+        if not futures_coin_account:
+            return futures_coin_account
         return [x for x in futures_coin_account['assets'] if float(x['walletBalance']) != 0]
 
-    def get_spot_account(self):
-        spot_account = self.coin_m.get_account()
+    def get_spot_account(self) -> list[dict]:
+        spot_account = self._get_response(self.coin_m.get_account)
+        if not spot_account:
+            return spot_account
         return [x for x in spot_account['balances'] if float(x['free']) != 0 or float(x['locked']) != 0]
+
+    def _get_response(self, fn) -> dict | list:
+        try:
+            response = fn()
+        except BinanceAPIException:
+            return []
+        return response
 
     def get_account(self):
         spot_account = self.get_spot_account()
