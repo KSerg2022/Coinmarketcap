@@ -2,7 +2,7 @@
 import csv
 
 
-from settings import base_dir, time_stamp
+from settings import data_dir, time_stamp
 
 
 def write_csv_file(csv_table: list[list], delimiter: str = ','):
@@ -10,7 +10,7 @@ def write_csv_file(csv_table: list[list], delimiter: str = ','):
     Input: Nested list csv_table and a string file_name
     Action: Write fields in csv_table into a comma-separated CSV file with the name file_name
     """
-    file_name = base_dir / 'csv_files' / f'data_{time_stamp}.csv'
+    file_name = data_dir / 'csv_files' / f'data_{time_stamp}.csv'
 
     with open(file_name, 'w', newline='', encoding='UTF-8') as csvfile:
         csv_writer = csv.writer(csvfile, delimiter=delimiter, quoting=csv.QUOTE_MINIMAL)
@@ -31,5 +31,6 @@ def create_table(data: dict[dict]) -> list[list]:
 
 
 def create_csv_file(data: dict[dict]):
+    """"""
     csv_table = create_table(data)
     write_csv_file(csv_table)
