@@ -1,11 +1,11 @@
 """"""
 
-from .ex_lbank import ExLbank
-from .ex_mexc import ExMexc
-from .ex_gateio import ExGate
-from .ex_bybit import ExBybit
-from .ex_okx import ExOkx
-from .ex_binance import ExBinance
+from exchanges.ex_lbank import ExLbank
+from exchanges.ex_mexc import ExMexc
+from exchanges.ex_gateio import ExGate
+from exchanges.ex_bybit import ExBybit
+from exchanges.ex_okx import ExOkx
+from exchanges.ex_binance import ExBinance
 
 from blockchains.bsc import Bsc
 from blockchains.ether import Ether
@@ -34,9 +34,9 @@ class DataFromExchangers:
         ]
 
     def get_data_from_exchangers(self):
+        """"""
         for exchanger in self.exchangers:
             self.currencies.append(exchanger())
-
         return self.currencies
 
 
