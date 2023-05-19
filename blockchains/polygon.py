@@ -1,13 +1,12 @@
 """
-
-
+https://polygonscan.com/
 """
 import os
 
 from blockchains.base import Base
+from settings import POLYGON_CURRENCIES
 
-from dotenv import load_dotenv
-load_dotenv()
+blockchain = os.path.splitext(os.path.basename(__file__))[0]
 
 
 class Polygon(Base):
@@ -17,21 +16,17 @@ class Polygon(Base):
         self.host = 'https://api.polygonscan.com/api'
         self.api_key = os.environ.get('POLYGONSCAN_API_KEY')
         self.wallet = os.environ.get('WALLET_ADDRESS')
+        self.currencies = POLYGON_CURRENCIES
 
-        self.currencies = {
-            'MATIC': '0x0000000000000000000000000000000000001010',
-        }
-
-    def get_account(self):
-        currencies = self.get_available_currencies()
-        return {os.path.splitext(os.path.basename(__file__))[0]: sorted(currencies, key=lambda x: x['coin'])}
+    def get_account(self) -> dict[dict]:
+        currencies = self._get_account()
+        return {blockchain: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':
-    r = Polygon()
+    result = Polygon()
     # print(r.get_account_balance())
 
-    res = r.get_account()
+    res = result.get_account()
     print(res)
     [print(i) for i in list(res.values())[0]]
-
