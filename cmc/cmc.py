@@ -57,7 +57,7 @@ def parse_cryptocurrencies(currencies_data: dict[dict]) -> dict[str, dict[str, s
 
 
 def parse_cryptocurrencies_data(currencies_data: dict[dict], symbol: str) -> dict[str, str]:
-    """Parse weather data"""
+    """Parse data"""
     date = currencies_data['status']['timestamp']
 
     try:
