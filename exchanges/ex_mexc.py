@@ -62,7 +62,6 @@ class ExMexc:
 
 if __name__ == '__main__':
     currencies = ExMexc()
-    currencies.get_account()
+    result = currencies.get_account()
+    print(result)
 
-    # for symbol in currencies.get_account():
-    #     print(f"{symbol['coin']} = {float(symbol['bal']) }")
