@@ -166,4 +166,4 @@ cython_debug/
 **/xlsx_files/**
 !.gitkeep
 coinmarketcap
-settings
+/settings.py
