@@ -50,7 +50,6 @@ class Main:
     def get_aggregation_data(data_from_cmc, data_from_exchangers):
         """"""
         time_data = set()
-        print(data_from_cmc)
 
         aggregation_data = deepcopy(data_from_exchangers)
         for exchanger in aggregation_data:
