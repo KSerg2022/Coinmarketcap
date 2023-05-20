@@ -10,7 +10,7 @@ class XlsxBase:
     def create_table(self, data):
         pass
 
-    def create_xlsx(self, data: dict[str, dict[str, str]]):
+    def create_xlsx(self, data: dict[dict]):
         table, headers_lines, headers_columns = self.create_table(data)
         self.create_xlsx_file(table, headers_lines, headers_columns)
 
