@@ -43,21 +43,28 @@ class Cmc:
             print('error ----- ', message)
             raise RuntimeError(message)
 
+        session.close()
         return response.json()
 
-    def parse_cryptocurrencies(self, currencies_data: dict[dict]) -> dict[dict[str, dict[str, str]]]:
+    def parse_cryptocurrencies(self, currencies_data: dict[dict]) -> dict[dict[str, dict]]:
         """Parse weather data"""
         currencies = {}
         for symbol in self.symbols:
             result = self.parse_cryptocurrencies_data(currencies_data, symbol)
-            if symbol == 'MIOTA':
-                symbol = 'IOTA'
-            currencies[symbol.upper()] = result
+            if not result:
+                continue
+            else:
+                if symbol == 'MIOTA':
+                    symbol = 'IOTA'
+                currencies[symbol.upper()] = result
         return dict(sorted(currencies.items()))
 
     def parse_cryptocurrencies_data(self, currencies_data: dict[dict], symbol: str) -> dict[str, str]:
         """Parse data"""
-        date = currencies_data['status']['timestamp']
+        try:
+            date = currencies_data['status']['timestamp']
+        except KeyError:
+            return {}
 
         try:
             currencies_data['data'][symbol]
