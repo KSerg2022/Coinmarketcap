@@ -161,8 +161,9 @@ cython_debug/
 
 # my adding
 .idea
-csv_files/**
-json_files/**
-xlsx_files/**
+**/csv_files/**
+**/json_files/**
+**/xlsx_files/**
 !.gitkeep
 coinmarketcap
+settings
