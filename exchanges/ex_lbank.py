@@ -1,7 +1,7 @@
 """https://github.com/LBank-exchange/lbank-python-api/blob/master/LBank/rest.py"""
 import os
 
-from .LBank import LBankAPI
+from exchanges.handlers.LBank import LBankAPI
 
 from dotenv import load_dotenv
 
