@@ -1,38 +1,35 @@
-""""""
-import os
+"""Only data from coinmarketcap.com"""
 
-from dotenv import load_dotenv
+from cmc.cmc import Cmc
+from handlers.json_file import JsonFile
+from handlers.xlsx_file import XlsxFileOnlyCmc
 
-from get_data import get_cryptocurrency, parse_cryptocurrencies
-
-from json_file import wright_to_json, load_data_from_file
-from xlsx_file import create_xlsx
-from csv_file import create_csv_file
-
-load_dotenv()
+from handlers.csv_file import CsvFileOnlyCmc
 
 
-def main(api_cmc: str):
+def main():
     """"""
+    cmc = Cmc()
+    json = JsonFile()
+
     # get info from coinmarketcap for cryptocurrencies
-    cryptocurrencies_data = get_cryptocurrency(api_cmc)
+    cryptocurrencies_data = cmc.get_cryptocurrency()
 
     # dump all data to json file
-    wright_to_json(cryptocurrencies_data)
+    json.wright_to_json_cmc_data(cryptocurrencies_data)
 
     # load all data from json file
-    # cryptocurrencies_data = load_data_from_file()
+    cryptocurrencies_data = json.load_cmc_data_from_file()
 
     # parse all data for using
-    cryptocurrencies_data = parse_cryptocurrencies(cryptocurrencies_data)
+    cryptocurrencies_data = cmc.parse_cryptocurrencies(cryptocurrencies_data)
 
     # dump data to xlsx file
-    create_xlsx(cryptocurrencies_data)
+    XlsxFileOnlyCmc().create_xlsx(cryptocurrencies_data)
 
     # dump data to csv file
-    # create_csv_file(cryptocurrencies_data)
+    # CsvFileOnlyCmc().create_csv_file(cryptocurrencies_data)
 
 
 if __name__ == '__main__':
-    api_cmc = os.environ.get('API_COINMARCETCAP')
-    main(api_cmc)
+    main()
