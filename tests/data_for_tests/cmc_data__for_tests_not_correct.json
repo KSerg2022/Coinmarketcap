@@ -1,0 +1,37 @@
+[
+  {
+    "data": {
+      "ADA": {
+        "id": 2010,
+        "name": "Cardano",
+        "symbol": "ADA",
+        "quote": {
+          "USD": {
+            "price": 0.36510704694717705
+          }
+        }
+      }
+    }
+  },
+  {
+    "status": {
+    },
+    "data": {
+      "ADA": {
+        "id": 2010,
+        "name": "Cardano",
+        "symbol": "ADA",
+        "quote": {
+          "USD": {
+            "price": 0.36510704694717705
+          }
+        }
+      }
+    }
+  },
+  {
+    "status": {
+      "timestamp": "2023-05-20T13:26:55.517Z"
+    }
+  }
+]

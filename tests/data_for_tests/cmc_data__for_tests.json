@@ -1,0 +1,149 @@
+{
+    "status": {
+        "timestamp": "2023-05-20T13:26:55.517Z",
+        "error_code": 0,
+        "error_message": null,
+        "elapsed": 62,
+        "credit_count": 2,
+        "notice": null
+    },
+    "data": {
+        "ADA": {
+            "id": 2010,
+            "name": "Cardano",
+            "symbol": "ADA",
+            "slug": "cardano",
+            "num_market_pairs": 790,
+            "date_added": "2017-10-01T00:00:00.000Z",
+            "tags": [
+                "dpos",
+                "pos",
+                "platform",
+                "research",
+                "smart-contracts",
+                "staking",
+                "cardano-ecosystem",
+                "cardano",
+                "layer-1"
+            ],
+            "max_supply": 45000000000,
+            "circulating_supply": 34863573492.476,
+            "total_supply": 35793946862.567,
+            "is_active": 1,
+            "infinite_supply": false,
+            "platform": null,
+            "cmc_rank": 7,
+            "is_fiat": 0,
+            "self_reported_circulating_supply": null,
+            "self_reported_market_cap": null,
+            "tvl_ratio": null,
+            "last_updated": "2023-05-20T13:25:00.000Z",
+            "quote": {
+                "USD": {
+                    "price": 0.36510704694717705,
+                    "volume_24h": 133712564.53528485,
+                    "volume_change_24h": -21.3266,
+                    "percent_change_1h": -0.09975365,
+                    "percent_change_24h": -1.4322433,
+                    "percent_change_7d": -0.06219677,
+                    "percent_change_30d": -12.23716561,
+                    "percent_change_60d": 5.20094264,
+                    "percent_change_90d": -10.46473828,
+                    "market_cap": 12728936363.863792,
+                    "market_cap_dominance": 1.1308,
+                    "fully_diluted_market_cap": 16429817112.62,
+                    "tvl": null,
+                    "last_updated": "2023-05-20T13:25:00.000Z"
+                }
+            }
+        },
+        "AE": {
+            "id": 1700,
+            "name": "\u00c6ternity",
+            "symbol": "AE",
+            "slug": "aeternity",
+            "num_market_pairs": 33,
+            "date_added": "2017-06-01T00:00:00.000Z",
+            "tags": [
+                "mineable",
+                "medium-of-exchange",
+                "smart-contracts"
+            ],
+            "max_supply": 536306702,
+            "circulating_supply": 368244805.5,
+            "total_supply": 396262883.69932,
+            "is_active": 1,
+            "infinite_supply": false,
+            "platform": null,
+            "cmc_rank": 628,
+            "is_fiat": 0,
+            "self_reported_circulating_supply": null,
+            "self_reported_market_cap": null,
+            "tvl_ratio": null,
+            "last_updated": "2023-05-20T13:25:00.000Z",
+            "quote": {
+                "USD": {
+                    "price": 0.05337207135630303,
+                    "volume_24h": 231904.00203406,
+                    "volume_change_24h": -25.7162,
+                    "percent_change_1h": -0.06540825,
+                    "percent_change_24h": 7.80273218,
+                    "percent_change_7d": -2.17595131,
+                    "percent_change_30d": -21.2586511,
+                    "percent_change_60d": -26.7812605,
+                    "percent_change_90d": -30.30096693,
+                    "market_cap": 19653988.03573393,
+                    "market_cap_dominance": 0,
+                    "fully_diluted_market_cap": 28623799.57,
+                    "tvl": null,
+                    "last_updated": "2023-05-20T13:25:00.000Z"
+                }
+            }
+        },
+        "AGV": {
+            "id": 15348,
+            "name": "Astra Guild Ventures",
+            "symbol": "AGV",
+            "slug": "astra-guild-ventures",
+            "num_market_pairs": 7,
+            "date_added": "2021-11-30T05:50:47.000Z",
+            "tags": [],
+            "max_supply": 2000000000,
+            "circulating_supply": 0,
+            "total_supply": 2000000000,
+            "platform": {
+                "id": 1027,
+                "name": "Ethereum",
+                "symbol": "ETH",
+                "slug": "ethereum",
+                "token_address": "0xf4f618eff5ef36cde2fca4fbd86554c62fb1382b"
+            },
+            "is_active": 1,
+            "infinite_supply": false,
+            "cmc_rank": 6040,
+            "is_fiat": 0,
+            "self_reported_circulating_supply": 124464973.61000013,
+            "self_reported_market_cap": 28185.672763164133,
+            "tvl_ratio": null,
+            "last_updated": "2023-05-20T13:25:00.000Z",
+            "quote": {
+                "USD": {
+                    "price": 0.00022645465584142106,
+                    "volume_24h": 1060.62707571,
+                    "volume_change_24h": -64.2823,
+                    "percent_change_1h": 0.00835616,
+                    "percent_change_24h": -8.85947793,
+                    "percent_change_7d": -39.28425817,
+                    "percent_change_30d": -46.27256775,
+                    "percent_change_60d": -41.69950753,
+                    "percent_change_90d": -40.08566528,
+                    "market_cap": 0,
+                    "market_cap_dominance": 0,
+                    "fully_diluted_market_cap": 452909.31,
+                    "tvl": null,
+                    "last_updated": "2023-05-20T13:25:00.000Z"
+               }
+            }
+        }
+    }
+}
