@@ -1,126 +1,100 @@
 """"""
-import os
 
 from copy import deepcopy
 
-from get_data import get_cryptocurrency, parse_cryptocurrencies
+from cmc.cmc import Cmc
 from exchanges.exchangers import DataFromExchangers
 
-from json_file import (wright_to_json_cmc_data, load_cmc_data_from_file,
-                       wright_to_json_exchangers_data, load_exchangers_data_from_file)
-# from xlsx_file import create_xlsx
-# from csv_file import create_csv_file
-
-from dotenv import load_dotenv
-
-load_dotenv()
+from handlers.json_file import JsonFile
+from handlers.xlsx_file import XlsxFile
+from handlers.csv_file import CsvFile
 
 
-def get_data_from_cmc(api_cmc: str):
-    ## get info from coinmarketcap for cryptocurrencies
-    cryptocurrencies_data = get_cryptocurrency(api_cmc)
-
-    ## dump all data to json file
-    wright_to_json_cmc_data(cryptocurrencies_data)
-
-    ## load all data from json file
-    # cryptocurrencies_data = load_cmc_data_from_file()
-
-    ## parse all data for using
-    cryptocurrencies_data = parse_cryptocurrencies(cryptocurrencies_data)
-
-    return cryptocurrencies_data
-
-
-def get_data_from_exchangers():
-    ## get info from exchangers for cryptocurrencies
-    exchangers_data = DataFromExchangers().get_data_from_exchangers()
-
-    ## dump all data to json file
-    wright_to_json_exchangers_data(exchangers_data)
-
-    ## load all data from json file
-    # exchangers_data = load_exchangers_data_from_file()
-
-    return exchangers_data
-
-
-def get_aggregation_data(data_from_cmc, data_from_exchangers):
+class Main:
     """"""
-    time_data = set()
-    print(data_from_cmc)
 
-    aggregation_data = deepcopy(data_from_exchangers)
-    for exchanger in aggregation_data:
-        for currency in list(exchanger.values())[0]:
-            try:
-                currency.update(data_from_cmc[currency['coin']])
-                currency.update({'total': float(currency['bal']) * float(currency['price'])})
-                time_data.add(currency['coin'])
-            except KeyError:
-                currency.update({'data': '---', 'id': '---', 'name': '---', 'price': 0, 'total': 0})
+    def __init__(self):
+        self.cmc = Cmc()
+        self.json = JsonFile()
+        self.xlsx = XlsxFile()
+        self.exchangers = DataFromExchangers()
 
-    w = []
-    for symbol, value in data_from_cmc.items():
-        if symbol in time_data:
-            continue
-        else:
-            w.append({'coin': symbol,
-                      'bal': 0,
-                      'data': value['data'],
-                      'id': value['id'],
-                      'name': value['name'],
-                      'price': value['price'],
-                      'total': 0
-                      })
+    def get_data_from_cmc(self):
+        ## get info from coinmarketcap for cryptocurrencies
+        cryptocurrencies_data = self.cmc.get_cryptocurrency()
 
-    aggregation_data.append({'others': w})
+        ## dump all data to json file
+        self.json.wright_to_json_cmc_data(cryptocurrencies_data)
 
-    return aggregation_data
+        ## load all data from json file
+        cryptocurrencies_data = self.json.load_cmc_data_from_file()
+
+        ## parse all data for using
+        cryptocurrencies_data = self.cmc.parse_cryptocurrencies(cryptocurrencies_data)
+
+        return cryptocurrencies_data
+
+    def get_data_from_exchangers(self):
+        ## get info from exchangers for cryptocurrencies
+        exchangers_data = self.exchangers.get_data_from_exchangers()
+
+        ## dump all data to json file
+        self.json.wright_to_json_exchangers_data(exchangers_data)
+
+        ## load all data from json file
+        exchangers_data = self.json.load_exchangers_data_from_file()
+
+        return exchangers_data
+
+    @staticmethod
+    def get_aggregation_data(data_from_cmc, data_from_exchangers):
+        """"""
+        time_data = set()
+        print(data_from_cmc)
+
+        aggregation_data = deepcopy(data_from_exchangers)
+        for exchanger in aggregation_data:
+            for currency in list(exchanger.values())[0]:
+                try:
+                    currency.update(data_from_cmc[currency['coin']])
+                    currency.update({'total': float(currency['bal']) * float(currency['price'])})
+                    time_data.add(currency['coin'])
+                except KeyError:
+                    currency.update({'data': '---', 'id': '---', 'name': '---', 'price': 0, 'total': 0})
+
+        w = []
+        for symbol, value in data_from_cmc.items():
+            if symbol in time_data:
+                continue
+            else:
+                w.append({'coin': symbol,
+                          'bal': 0,
+                          'data': value['data'],
+                          'id': value['id'],
+                          'name': value['name'],
+                          'price': value['price'],
+                          'total': 0
+                          })
+
+        aggregation_data.append({'others': w})
+
+        return aggregation_data
 
 
-import pandas as pd
-
-from settings import base_dir, time_stamp
-
-
-def create_table(data: list[dict]):
-    table = []
-    headers_lines = []
-    for exchanger in data:
-        for currency in list(exchanger.values())[0]:
-            row = list(currency.values())
-            table.append(row)
-
-            headers_lines.append(list(exchanger.keys())[0])
-    headers_columns = list(list(data[0].values())[0][0].keys())
-    return table, headers_lines, headers_columns
-
-
-def create_xlsx_file(table: list[list], line_index: list[dict], columns: list[str]):
+def main():
     """"""
-    path_to_file = base_dir / 'xlsx_files' / f'data_{time_stamp}.xlsx'
+    main = Main()
+    data_from_cmc = main.get_data_from_cmc()
+    data_from_exchangers = main.get_data_from_exchangers()
 
-    df = pd.DataFrame(table, index=line_index, columns=columns)
-    df.to_excel(path_to_file, sheet_name='Sheet1', startrow=0, startcol=0)
-
-
-def create_xlsx(data: dict[dict]):
-    table, headers_lines, headers_columns = create_table(data)
-    create_xlsx_file(table, headers_lines, headers_columns)
-
-
-def main(api_cmc: str):
-    """"""
-    data_from_cmc = get_data_from_cmc(api_cmc)
-    data_from_exchangers = get_data_from_exchangers()
-
-    aggregation_data = get_aggregation_data(data_from_cmc, data_from_exchangers)
+    aggregation_data = main.get_aggregation_data(data_from_cmc, data_from_exchangers)
     # print(aggregation_data)
+    # [print(i) for i in aggregation_data]
 
-    create_xlsx(aggregation_data)
+    XlsxFile().create_xlsx(aggregation_data)
+
+    # CsvFile().create_csv_file(aggregation_data)
 
 
 if __name__ == '__main__':
-    api_cmc = os.environ.get('API_COINMARCETCAP')
-    main(api_cmc)
+    main()
