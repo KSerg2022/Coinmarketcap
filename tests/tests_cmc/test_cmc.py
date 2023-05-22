@@ -96,7 +96,7 @@ class TestCmcParseCryptocurrencies(TestCmc):
         self.assertEqual(list(result.values())[0]['id'], 'not in CMC')
 
     def test_get_cryptocurrency_with_MIOTA_symbol(self):
-        self.cmc.symbols = ['MIOTA']
+        self.cmc.SYMBOLS = ['MIOTA']
         self.cmc.parameters = self.get_parameters(symbols=self.cmc.symbols)
         result = self.cmc.parse_cryptocurrencies(self.cmc.get_cryptocurrency())
 
