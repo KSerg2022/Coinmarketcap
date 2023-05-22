@@ -3,6 +3,7 @@
 """
 
 import requests
+from requests.exceptions import RequestException
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -10,28 +11,30 @@ load_dotenv()
 
 class Base:
     """"""
+    COIN = 'coin'
+    BAL = 'bal'
+
     def __init__(self):
         self.host = ''
         self.api_key = ''
         self.wallet = ''
         self.currencies = {}
+        self.params = {}
 
     def _get_account(self) -> list[dict]:
         """"""
         results = []
         for currency, contractaddress in self.currencies.items():
-            params = {'module': 'account',
-                      'action': 'tokenbalance',
-                      'contractaddress': contractaddress,
-                      'address': self.wallet,
-                      'tag': 'latest',
-                      'apikey': self.api_key,
-                      }
-            result = self._get_request(self.host, params)
+            self.params['contractaddress'] = contractaddress
+
+            result = self._get_request(self.host, self.params)
+            if result['message'] == 'NOTOK':
+                print(f"Error - {result['result']}, host={self.host}")
+                return [result]
             if currency in ['MCRT', ]:
-                results.append({'coin': currency, 'bal': float(result['result']) / (10 ** 9)})
+                results.append({self.COIN: currency, self.BAL: float(result['result']) / (10 ** 9)})
             else:
-                results.append({'coin': currency, 'bal': float(result['result']) / (10 ** 18)})
+                results.append({self.COIN: currency, self.BAL: float(result['result']) / (10 ** 18)})
         return results
 
     @staticmethod
@@ -43,10 +46,12 @@ class Base:
                 data = response.json()
                 return data
             else:
-                print(f"Ошибка получения данных. Код ответа: {response.status_code}")
-        except requests.exceptions.RequestException as e:
+                e = f"Ошибка получения данных. Код ответа: {response.status_code}"
+                print(e)
+                return {'message': 'NOTOK', "result": e}
+        except RequestException as e:
             print(f"Ошибка подключения: {str(e)}")
-        return None
+            return {'message': 'NOTOK', "result": str(e)}
 
     def get_account_balance(self) -> dict | None:
         """"""
