@@ -40,7 +40,8 @@ class ExBinance:
     def _get_response(self, fn) -> dict | list:
         try:
             response = fn()
-        except BinanceAPIException:
+        except BinanceAPIException as e:
+            print(os.path.splitext(os.path.basename(__file__))[0][3:], e)
             return []
         return response
 
