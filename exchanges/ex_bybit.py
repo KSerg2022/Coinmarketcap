@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from pybit.unified_trading import HTTP
-
+from pybit.exceptions import FailedRequestError
 
 class ExBybit:
     """"""
@@ -17,11 +17,21 @@ class ExBybit:
 
     def get_account_spot(self):
         """"""
-        return self.session.get_spot_asset_info()
+        try:
+            respone = self.session.get_spot_asset_info()
+            return respone
+        except FailedRequestError as e:
+            print(f'{os.path.splitext(os.path.basename(__file__))[0][3:].upper()} -- {e}')
+            return []
 
     def get_account_margin(self):
         """"""
-        return self.session.get_wallet_balance(accountType="CONTRACT")
+        try:
+            respone = self.session.get_wallet_balance(accountType="CONTRACT")
+            return respone
+        except FailedRequestError as e:
+            print(f'{os.path.splitext(os.path.basename(__file__))[0][3:].upper()} -- {e}')
+            return []
 
     def get_account(self):
         account_spot = self.get_account_spot()
@@ -34,22 +44,27 @@ class ExBybit:
     def _normalize_data(account_spot, account_margin):
         """"""
         q = defaultdict(list)
-        for symbol in account_spot['result']['spot']['assets']:
-            q[symbol['coin']].append(float(symbol['free']) + float(symbol['frozen']))
+        if account_spot:
+            for symbol in account_spot['result']['spot']['assets']:
+                q[symbol['coin']].append(float(symbol['free']) + float(symbol['frozen']))
 
-        for symbol in account_margin['result']['list'][0]['coin']:
-            if symbol['coin'] in q:
-                q[symbol['coin']] = [q[symbol['coin']][0] + float(symbol['equity'])]
-            else:
-                q[symbol['coin']].append(float(symbol['equity']))
+        if account_margin:
+            for symbol in account_margin['result']['list'][0]['coin']:
+                if symbol['coin'] in q:
+                    q[symbol['coin']] = [q[symbol['coin']][0] + float(symbol['equity'])]
+                else:
+                    q[symbol['coin']].append(float(symbol['equity']))
 
         currencies = []
-        for currency, value in q.items():
-            currencies.append({
-                'coin': currency.upper(),
-                'bal': value[0]
-            })
-        return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
+        if q:
+            for currency, value in q.items():
+                currencies.append({
+                    'coin': currency.upper(),
+                    'bal': value[0]
+                })
+            return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
+        else:
+            return {os.path.splitext(os.path.basename(__file__))[0][3:]: {}}
 
 
 if __name__ == '__main__':
