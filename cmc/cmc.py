@@ -14,29 +14,28 @@ class Cmc:
     """"""
 
     def __init__(self):
-        self.symbols = self.normalize_data(currencies_symbols) \
-                  + self.normalize_data(additional_currencies_symbols) \
-                  + currencies_symbols_spec
+        self.symbols = ','.join(self.normalize_data(currencies_symbols) +
+                                self.normalize_data(additional_currencies_symbols) +
+                                currencies_symbols_spec)
         self.url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'  # Latest quotes
         self.api_cmc = os.environ.get('API_COINMARCETCAP')
 
-    def get_cryptocurrency(self: str) -> dict[dict]:
-        """"""
-        symbols = ','.join(self.symbols)
-
-        parameters = {
-            'symbol': symbols,
+        self.parameters = {
+            'symbol': self.symbols,
             'convert': 'USD'
         }
-        headers = {
+        self.headers = {
             'Accepts': 'application/json',
             'X-CMC_PRO_API_KEY': self.api_cmc,
         }
+
+    def get_cryptocurrency(self: str) -> dict[dict]:
+        """"""
         session = Session()
-        session.headers.update(headers)
+        session.headers.update(self.headers)
 
         try:
-            response = session.get(self.url, params=parameters)
+            response = session.get(self.url, params=self.parameters)
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             message = f'openweathermap.org returned non-200 code. Actual code is: {response.status_code},' \
                       f' message is: {response.json()["status"]["error_message"]}'
