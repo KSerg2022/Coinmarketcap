@@ -18,10 +18,19 @@ class Fantom(Base):
         self.api_key = os.environ.get('FTMSCAN_API_KEY')
         self.wallet = os.environ.get('WALLET_ADDRESS')
         self.currencies = FTM_CURRENCIES
+        self.params = {'module': 'account',
+                       'action': 'tokenbalance',
+                       'contractaddress': '',
+                       'address': self.wallet,
+                       'tag': 'latest',
+                       'apikey': self.api_key,
+                       }
         self.blockchain = os.path.splitext(os.path.basename(__file__))[0]
 
     def get_account(self) -> dict[dict]:
         currencies = self._get_account()
+        if 'NOTOK' in list(currencies[0].values()):
+            return {blockchain: currencies}
         return {blockchain: sorted(currencies, key=lambda x: x['coin'])}
 
 
