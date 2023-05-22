@@ -167,3 +167,4 @@ cython_debug/
 !.gitkeep
 coinmarketcap
 /settings.py
+**/_trial_temp/**
