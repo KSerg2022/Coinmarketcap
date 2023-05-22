@@ -9,14 +9,18 @@ from settings import (currencies_symbols,
                       additional_currencies_symbols,
                       currencies_symbols_spec)
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class Cmc:
     """"""
 
     def __init__(self):
-        self.symbols = ','.join(self.normalize_data(currencies_symbols) +
-                                self.normalize_data(additional_currencies_symbols) +
-                                currencies_symbols_spec)
+        self.SYMBOLS = self.normalize_data(currencies_symbols) + self.normalize_data(additional_currencies_symbols) +\
+                       currencies_symbols_spec
+        self.symbols = ','.join(self.SYMBOLS)
         self.url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'  # Latest quotes
         self.api_cmc = os.environ.get('API_COINMARCETCAP')
 
@@ -48,7 +52,7 @@ class Cmc:
     def parse_cryptocurrencies(self, currencies_data: dict[dict]) -> dict[dict[str, dict]]:
         """Parse weather data"""
         currencies = {}
-        for symbol in self.symbols:
+        for symbol in self.SYMBOLS:
             result = self.parse_cryptocurrencies_data(currencies_data, symbol)
             if not result:
                 continue
@@ -118,3 +122,9 @@ class Cmc:
     @staticmethod
     def normalize_data(data: list[str]) -> list[str]:
         return [value.upper() for value in data]
+
+
+if __name__ == '__main__':
+    result = Cmc()
+    r = result.get_cryptocurrency()
+    print(result.parse_cryptocurrencies(r))
