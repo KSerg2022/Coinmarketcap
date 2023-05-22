@@ -6,11 +6,7 @@ from pathlib import Path
 
 from cmc.cmc import Cmc
 
-# import warnings
-# warnings.filterwarnings(action="ignore", message="unclosed", category=ResourceWarning)
-
 from dotenv import load_dotenv
-
 load_dotenv()
 
 base_dir = Path(__file__).parent.parent
@@ -24,6 +20,14 @@ class TestCmc(unittest.TestCase):
     def tearDown(self) -> None:
         del self.cmc
 
+    @staticmethod
+    def get_headers(api_cmc):
+        return {'Accepts': 'application/json', 'X-CMC_PRO_API_KEY': api_cmc}
+
+    @staticmethod
+    def get_parameters(symbols):
+        return {'symbol': symbols, 'convert': 'USD'}
+
 
 class testCncGetCryptocurrency(TestCmc):
 
@@ -35,7 +39,7 @@ class testCncGetCryptocurrency(TestCmc):
         self.assertEqual(response['status']['error_code'], 0)
 
     def test_get_cryptocurrency_with_wrong_api(self):
-        self.cmc.api_cmc = 'qwqw'
+        self.cmc.headers = self.get_headers(api_cmc='qwqw')
         response = self.cmc.get_cryptocurrency()
 
         self.assertEqual(response['status']['error_code'], 1001)
@@ -49,14 +53,14 @@ class testCncGetCryptocurrency(TestCmc):
         self.assertEqual(response['message'], 'Not Found')
 
     def test_get_cryptocurrency_with_empty_symbols(self):
-        self.cmc.symbols = []
+        self.cmc.parameters = self.get_parameters(symbols='')
         response = self.cmc.get_cryptocurrency()
 
         self.assertEqual(response['status']['error_code'], 400)
         self.assertEqual(response['status']['error_message'], '"symbol" is not allowed to be empty')
 
     def test_get_cryptocurrency_with_wrong_symbol(self):
-        self.cmc.symbols = ['QQQQQQ']
+        self.cmc.parameters = self.get_parameters(symbols=['QQQQQQ'])
         response = self.cmc.get_cryptocurrency()
 
         self.assertEqual(response['status']['error_code'], 0)
@@ -80,23 +84,6 @@ class TestCmcParseCryptocurrencies(TestCmc):
         self.assertEqual(list(result.values()), [])
 
     def test_parse_cryptocurrencies_data_with_not_correct_data(self):
-        data = {
-            "status": {
-                "timestamp": "2023-05-20T13:26:55.517Z",
-            },
-            "data": {
-                "ADA": {
-                    "id": 2010,
-                    "name": "Cardano",
-                    "symbol": "ADA",
-                    "quote": {
-                        "USD": {
-                            "price": 0.36510704694717705,
-                        }
-                    }
-                }
-            }
-        }
         path_to_file = base_dir / 'data_for_tests' / 'cmc_data__for_tests_not_correct.json'
         data = load_data_from_file(path_to_file)
         self.cmc.symbols = ['ADA']
@@ -107,6 +94,13 @@ class TestCmcParseCryptocurrencies(TestCmc):
 
         result = self.cmc.parse_cryptocurrencies(data[2])
         self.assertEqual(list(result.values())[0]['id'], 'not in CMC')
+
+    def test_get_cryptocurrency_with_MIOTA_symbol(self):
+        self.cmc.symbols = ['MIOTA']
+        self.cmc.parameters = self.get_parameters(symbols=self.cmc.symbols)
+        result = self.cmc.parse_cryptocurrencies(self.cmc.get_cryptocurrency())
+
+        self.assertEqual(list(result.keys())[0], 'IOTA')
 
 
 class TestCmcParseCryptocurrenciesData(TestCmc):
