@@ -41,7 +41,7 @@ class ExBinance:
         try:
             response = fn()
         except BinanceAPIException as e:
-            print(os.path.splitext(os.path.basename(__file__))[0][3:], e)
+            print(f'{os.path.splitext(os.path.basename(__file__))[0][3:].upper()} -- {e}')
             return []
         return response
 
