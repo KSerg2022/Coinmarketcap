@@ -5,9 +5,6 @@ from handlers.json_file import JsonFile
 from handlers.xlsx_file import XlsxFileOnlyCmc
 from handlers.csv_file import CsvFileOnlyCmc
 
-from dotenv import load_dotenv
-load_dotenv()
-
 
 def main():
     """"""
