@@ -6,8 +6,6 @@ import os
 from blockchains.base import Base
 from settings import SOLANA_CURRENCIES
 
-blockchain = os.path.splitext(os.path.basename(__file__))[0]
-
 
 class Solana(Base):
     """"""
@@ -18,18 +16,19 @@ class Solana(Base):
         self.api_key = os.environ.get('SOLANA_API_KEY')
         self.wallet = os.environ.get('WALLET_SOLANA')
         self.currencies = SOLANA_CURRENCIES
-
-    def get_account(self) -> dict[dict]:
-        """"""
-        headers = {
+        self.headers = {
             'accept': 'application/json',
             'token': self.api_key,
         }
-        params = {'account': self.wallet,
-                  }
-        response = self._get_request(self.host, params, headers)
+        self.params = {'account': self.wallet,
+                       }
+        self.blockchain = os.path.splitext(os.path.basename(__file__))[0]
+
+    def get_account(self) -> dict[dict]:
+        """"""
+        response = self._get_request(self.host, self.params, self.headers)
         currencies = self._normalize_data(response)
-        return {blockchain: sorted(currencies, key=lambda x: x['coin'])}
+        return {self.blockchain: sorted(currencies, key=lambda x: x['coin'])}
 
     def _normalize_data(self, currencies):
         results = []
