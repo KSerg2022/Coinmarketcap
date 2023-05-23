@@ -1,9 +1,10 @@
 """
-
+Base class bo blockchains.
 """
-
 import requests
 from requests.exceptions import RequestException
+
+from settings import RATE_DECIMALS_9
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -20,22 +21,25 @@ class Base:
         self.wallet = ''
         self.currencies = {}
         self.params = {}
+        self.headers = {}
+        self.blockchain = ''
 
-    def _get_account(self) -> list[dict]:
+    def get_account(self) -> dict[str, dict]:
         """"""
-        results = []
+        currencies = []
         for currency, contractaddress in self.currencies.items():
             self.params['contractaddress'] = contractaddress
 
-            result = self._get_request(self.host, self.params)
-            if result['message'] == 'NOTOK':
-                print(f"Error - {result['result']}, host={self.host}")
-                return [result]
-            if currency in ['MCRT', ]:
-                results.append({self.COIN: currency, self.BAL: float(result['result']) / (10 ** 9)})
+            response = self._get_request(self.host, self.params, self.headers)
+            if response['message'] == 'NOTOK':
+                print(f"Error - {response['result']}, host={self.host}")
+                return {self.blockchain: [response]}
+
+            if currency in RATE_DECIMALS_9:
+                currencies.append({self.COIN: currency, self.BAL: float(response['result']) / (10 ** 9)})
             else:
-                results.append({self.COIN: currency, self.BAL: float(result['result']) / (10 ** 18)})
-        return results
+                currencies.append({self.COIN: currency, self.BAL: float(response['result']) / (10 ** 18)})
+        return {self.blockchain: sorted(currencies, key=lambda x: x['coin'])}
 
     @staticmethod
     def _get_request(url: str, params: dict[str, str], headers=None) -> dict | None:

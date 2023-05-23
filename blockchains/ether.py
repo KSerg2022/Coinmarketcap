@@ -1,13 +1,10 @@
 """
 https://etherscan.io/
 """
-
 import os
 
 from blockchains.base import Base
 from settings import ETHER_CURRENCIES
-
-blockchain = os.path.splitext(os.path.basename(__file__))[0]
 
 
 class Ether(Base):
@@ -20,18 +17,13 @@ class Ether(Base):
         self.wallet = os.environ.get('WALLET_ADDRESS')
         self.currencies = ETHER_CURRENCIES
         self.params = {'module': 'account',
-                      'action': 'tokenbalance',
-                      'contractaddress': '',
-                      'address': self.wallet,
-                      'tag': 'latest',
-                      'apikey': self.api_key,
-                      }
-
-    def get_account(self) -> dict[dict]:
-        currencies = self._get_account()
-        if 'NOTOK' in list(currencies[0].values()):
-            return {blockchain: currencies}
-        return {blockchain: sorted(currencies, key=lambda x: x['coin'])}
+                       'action': 'tokenbalance',
+                       'contractaddress': '',
+                       'address': self.wallet,
+                       'tag': 'latest',
+                       'apikey': self.api_key,
+                       }
+        self.blockchain = os.path.splitext(os.path.basename(__file__))[0]
 
 
 if __name__ == '__main__':
@@ -41,4 +33,3 @@ if __name__ == '__main__':
     res = result.get_account()
     print(res)
     [print(i) for i in list(res.values())[0]]
-

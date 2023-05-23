@@ -6,8 +6,6 @@ import os
 from blockchains.base import Base
 from settings import POLYGON_CURRENCIES
 
-blockchain = os.path.splitext(os.path.basename(__file__))[0]
-
 
 class Polygon(Base):
 
@@ -24,12 +22,7 @@ class Polygon(Base):
                        'tag': 'latest',
                        'apikey': self.api_key,
                        }
-
-    def get_account(self) -> dict[dict]:
-        currencies = self._get_account()
-        if 'NOTOK' in list(currencies[0].values()):
-            return {blockchain: currencies}
-        return {blockchain: sorted(currencies, key=lambda x: x['coin'])}
+        self.blockchain = os.path.splitext(os.path.basename(__file__))[0]
 
 
 if __name__ == '__main__':

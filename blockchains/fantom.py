@@ -1,13 +1,10 @@
 """
 https://ftmscan.com/
 """
-
 import os
 
 from blockchains.base import Base
 from settings import FTM_CURRENCIES
-
-blockchain = os.path.splitext(os.path.basename(__file__))[0]
 
 
 class Fantom(Base):
@@ -26,12 +23,6 @@ class Fantom(Base):
                        'apikey': self.api_key,
                        }
         self.blockchain = os.path.splitext(os.path.basename(__file__))[0]
-
-    def get_account(self) -> dict[dict]:
-        currencies = self._get_account()
-        if 'NOTOK' in list(currencies[0].values()):
-            return {blockchain: currencies}
-        return {blockchain: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':
