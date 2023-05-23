@@ -27,8 +27,13 @@ class Solana(Base):
     def get_account(self) -> dict[dict]:
         """"""
         response = self._get_request(self.host, self.params, self.headers)
-        currencies = self._normalize_data(response)
-        return {self.blockchain: sorted(currencies, key=lambda x: x['coin'])}
+        try:
+            message = response['message']
+            print(f"Error - {response['result']}, host={self.host}")
+            return {self.blockchain: [response]}
+        except (KeyError, TypeError):
+            currencies = self._normalize_data(response)
+            return {self.blockchain: sorted(currencies, key=lambda x: x['coin'])}
 
     def _normalize_data(self, currencies):
         results = []
