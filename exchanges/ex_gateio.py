@@ -4,6 +4,8 @@ import time
 import hashlib
 import hmac
 
+from requests.exceptions import RequestException
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -19,6 +21,7 @@ class ExGate:
     def __init__(self):
         self.key = os.environ.get('GATE_API_KEY')  # api_key
         self.secret = os.environ.get('GATE_API_SECRET_KEY')  # api_secret
+        self.exchanger = os.path.splitext(os.path.basename(__file__))[0][3:]
 
     def gen_sign(self, method, url, query_string=None, payload_string=None):
         """"""
@@ -46,19 +49,25 @@ class ExGate:
         """"""
         sign_headers = self.gen_sign('GET', self.prefix + url, self.query_param)
         self.headers.update(sign_headers)
-        r = requests.request('GET', self.host + self.prefix + url, headers=self.headers)
-        return r.json()
+        try:
+            r = requests.request('GET', self.host + self.prefix + url, headers=self.headers)
+            return r.json()
+        except RequestException as e:
+            print(f'{self.exchanger.upper()} -- {e}')
+            return {}
 
-    @staticmethod
-    def _normalize_data(currencies_account):
+    def _normalize_data(self, currencies_account):
         """"""
+        if not currencies_account:
+            return {self.exchanger: currencies_account}
+
         currencies = []
         for symbol in currencies_account:
             currencies.append({
                 'coin': symbol['currency'].upper(),
                 'bal': float(symbol['available']) + float(symbol['locked'])
             })
-        return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
+        return {self.exchanger: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':

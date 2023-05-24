@@ -6,6 +6,7 @@ load_dotenv()
 
 import okx.Account as Account
 import okx.Funding as Funding
+from okx.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
 
 
 class ExOkx:
@@ -25,14 +26,23 @@ class ExOkx:
 
         self.account = Account.AccountAPI(**self.params)
         self.funding = Funding.FundingAPI(**self.params)
+        self.exchanger = os.path.splitext(os.path.basename(__file__))[0][3:]
 
     def get_funding(self):
         """"""
-        return self.funding.get_balances()
+        return self._get_response(self.funding.get_balances)
 
     def get_account_trading(self):
         """"""
-        return self.account.get_account_balance()
+        return self._get_response(self.account.get_account_balance)
+
+    def _get_response(self, fn) -> dict | list:
+        try:
+            response = fn()
+        except OkxAPIException as e:
+            print(f'{self.exchanger.upper()} -- {e}')
+            return {}
+        return response
 
     def get_account(self):
         """"""
@@ -42,9 +52,11 @@ class ExOkx:
                                           currencies_funding)
         return currencies
 
-    @staticmethod
-    def _normalize_data(currencies_trading, currencies_funding):
+    def _normalize_data(self, currencies_trading, currencies_funding):
         """"""
+        if not currencies_trading and not currencies_funding:
+            return {self.exchanger: {}}
+
         currencies = []
         for symbol in currencies_trading['data'][0]['details'] + currencies_funding['data']:
             if y := [x for x in currencies if x['coin'] == symbol['ccy']]:
@@ -61,29 +73,7 @@ class ExOkx:
                         'coin': symbol['ccy'].upper(),
                         'bal': float(symbol['bal'])
                     })
-        # print('currencies -- ')
-        # print({os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])})
-
-
-
-
-        q = defaultdict(list)
-        for symbol in currencies_trading['data'][0]['details']:
-            q[symbol['ccy']].append(float(symbol['eq']))
-
-        for symbol in currencies_funding['data']:
-            if symbol['ccy'] in q:
-                q[symbol['ccy']] = [q[symbol['ccy']][0] + float(symbol['bal'])]
-            else:
-                q[symbol['ccy']].append(float(symbol['bal']))
-
-        currencies = []
-        for currency, value in q.items():
-            currencies.append({
-                'coin': currency.upper(),
-                'bal': value[0]
-            })
-        return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
+        return {self.exchanger: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':

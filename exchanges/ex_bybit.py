@@ -7,6 +7,7 @@ load_dotenv()
 from pybit.unified_trading import HTTP
 from pybit.exceptions import FailedRequestError
 
+
 class ExBybit:
     """"""
 
@@ -14,6 +15,7 @@ class ExBybit:
         self.apiKey = os.environ.get('BYBIT_API_KEY')
         self.apiSecret = os.environ.get('BYBIT_API_SECRET_KEY')
         self.session = HTTP(testnet=False, api_key=self.apiKey, api_secret=self.apiSecret)
+        self.exchanger = os.path.splitext(os.path.basename(__file__))[0][3:]
 
     def get_account_spot(self):
         """"""
@@ -21,8 +23,8 @@ class ExBybit:
             respone = self.session.get_spot_asset_info()
             return respone
         except FailedRequestError as e:
-            print(f'{os.path.splitext(os.path.basename(__file__))[0][3:].upper()} -- {e}')
-            return []
+            print(f'{self.exchanger.upper()} -- {e}')
+            return {}
 
     def get_account_margin(self):
         """"""
@@ -30,8 +32,8 @@ class ExBybit:
             respone = self.session.get_wallet_balance(accountType="CONTRACT")
             return respone
         except FailedRequestError as e:
-            print(f'{os.path.splitext(os.path.basename(__file__))[0][3:].upper()} -- {e}')
-            return []
+            print(f'{self.exchanger.upper()} -- {e}')
+            return {}
 
     def get_account(self):
         account_spot = self.get_account_spot()
@@ -40,9 +42,11 @@ class ExBybit:
                                           account_margin)
         return currencies
 
-    @staticmethod
-    def _normalize_data(account_spot, account_margin):
+    def _normalize_data(self, account_spot, account_margin):
         """"""
+        if not account_spot and not account_margin:
+            return {self.exchanger: {}}
+
         q = defaultdict(list)
         if account_spot:
             for symbol in account_spot['result']['spot']['assets']:
@@ -56,15 +60,12 @@ class ExBybit:
                     q[symbol['coin']].append(float(symbol['equity']))
 
         currencies = []
-        if q:
-            for currency, value in q.items():
-                currencies.append({
-                    'coin': currency.upper(),
-                    'bal': value[0]
-                })
-            return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
-        else:
-            return {os.path.splitext(os.path.basename(__file__))[0][3:]: {}}
+        for currency, value in q.items():
+            currencies.append({
+                'coin': currency.upper(),
+                'bal': value[0]
+            })
+        return {self.exchanger: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':

@@ -13,8 +13,6 @@ load_dotenv()
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 
-from settings import base_dir, time_stamp
-
 
 class ExBinance:
     host = 'https://api.binance.com'
@@ -24,6 +22,7 @@ class ExBinance:
         self.api_secret = os.environ.get('BINANCE_API_SECRET_KEY')
 
         self.coin_m = Client(api_key=self.api_key, api_secret=self.api_secret)
+        self.exchanger = os.path.splitext(os.path.basename(__file__))[0][3:]
 
     def get_futures_coin_account(self):
         futures_coin_account = self._get_response(self.coin_m.futures_coin_account)
@@ -41,8 +40,8 @@ class ExBinance:
         try:
             response = fn()
         except BinanceAPIException as e:
-            print(f'{os.path.splitext(os.path.basename(__file__))[0][3:].upper()} -- {e}')
-            return []
+            print(f'{self.exchanger.upper()} -- {e}')
+            return {}
         return response
 
     def get_account(self):
@@ -53,9 +52,11 @@ class ExBinance:
 
         return currencies
 
-    @staticmethod
-    def _normalize_data(spot_account, futures_coin_account):
+    def _normalize_data(self, spot_account, futures_coin_account):
         """"""
+        if not spot_account and not futures_coin_account:
+            return {self.exchanger: {}}
+
         currencies = []
         for symbol in spot_account + futures_coin_account:
             if y := [x for x in currencies if x['coin'] == symbol['asset']]:
@@ -76,7 +77,7 @@ class ExBinance:
                         'coin': symbol['asset'],
                         'bal': float(symbol['marginBalance'])
                     })
-        return {os.path.splitext(os.path.basename(__file__))[0][3:]: sorted(currencies, key=lambda x: x['coin'])}
+        return {self.exchanger: sorted(currencies, key=lambda x: x['coin'])}
 
 
 if __name__ == '__main__':
