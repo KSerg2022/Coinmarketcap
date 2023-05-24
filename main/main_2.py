@@ -3,7 +3,7 @@
 from copy import deepcopy
 
 from cmc.cmc import Cmc
-from exchanges.exchangers import DataFromExchangers
+from exchangers import DataFromExchangers
 
 from handlers.json_file import JsonFile
 from handlers.xlsx_file import XlsxFile
