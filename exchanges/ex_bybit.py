@@ -20,18 +20,18 @@ class ExBybit:
     def get_account_spot(self):
         """"""
         try:
-            respone = self.session.get_spot_asset_info()
-            return respone
-        except FailedRequestError as e:
+            response = self.session.get_spot_asset_info()
+            return response
+        except (RuntimeError, FailedRequestError) as e:
             print(f'{self.exchanger.upper()} -- {e}')
             return {}
 
     def get_account_margin(self):
         """"""
         try:
-            respone = self.session.get_wallet_balance(accountType="CONTRACT")
-            return respone
-        except FailedRequestError as e:
+            response = self.session.get_wallet_balance(accountType="CONTRACT")
+            return response
+        except (RuntimeError, FailedRequestError) as e:
             print(f'{self.exchanger.upper()} -- {e}')
             return {}
 
