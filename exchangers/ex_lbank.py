@@ -1,10 +1,10 @@
 """https://github.com/LBank-exchange/lbank-python-api/blob/master/LBank/rest.py"""
 import os
 
-from exchanges.handlers.LBank import LBankAPI
-from exchanges.handlers.LBank import LBankError
+from exchangers.handlers.LBank import LBankAPI
+from exchangers.handlers.LBank import LBankError
 
-from exchanges.ex_base import Exchanger
+from exchangers.ex_base import Exchanger
 
 from dotenv import load_dotenv
 

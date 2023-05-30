@@ -1,11 +1,11 @@
 """"""
 
-from exchanges.ex_lbank import ExLbank
-from exchanges.ex_mexc import ExMexc
-from exchanges.ex_gateio import ExGate
-from exchanges.ex_bybit import ExBybit
-from exchanges.ex_okx import ExOkx
-from exchanges.ex_binance import ExBinance
+from exchangers.ex_lbank import ExLbank
+from exchangers.ex_mexc import ExMexc
+from exchangers.ex_gateio import ExGate
+from exchangers.ex_bybit import ExBybit
+from exchangers.ex_okx import ExOkx
+from exchangers.ex_binance import ExBinance
 
 from blockchains.bsc import Bsc
 from blockchains.ether import Ether

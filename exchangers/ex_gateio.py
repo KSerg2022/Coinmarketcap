@@ -6,7 +6,7 @@ import hmac
 
 from requests.exceptions import RequestException
 
-from exchanges.ex_base import Exchanger
+from exchangers.ex_base import Exchanger
 
 from dotenv import load_dotenv
 

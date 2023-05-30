@@ -8,7 +8,7 @@ from collections import defaultdict
 from pybit.unified_trading import HTTP
 from pybit.exceptions import FailedRequestError, InvalidRequestError, UnauthorizedExceptionError
 
-from exchanges.ex_base import Exchanger
+from exchangers.ex_base import Exchanger
 
 from dotenv import load_dotenv
 

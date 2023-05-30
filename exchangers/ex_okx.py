@@ -4,7 +4,7 @@ import okx.Account as Account
 import okx.Funding as Funding
 from okx.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
 
-from exchanges.ex_base import Exchanger
+from exchangers.ex_base import Exchanger
 
 from dotenv import load_dotenv
 

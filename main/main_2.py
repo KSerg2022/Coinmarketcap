@@ -3,7 +3,7 @@
 from copy import deepcopy
 
 from cmc.cmc import Cmc
-from exchangers import DataFromExchangers
+from exchanges import DataFromExchangers
 
 from handlers.json_file import JsonFile
 from handlers.xlsx_file import XlsxFile
@@ -17,7 +17,7 @@ class Main:
         self.cmc = Cmc()
         self.json = JsonFile()
         self.xlsx = XlsxFile()
-        self.exchangers = DataFromExchangers()
+        self.exchanges = DataFromExchangers()
 
     def get_data_from_cmc(self):
         ## get info from coinmarketcap for cryptocurrencies
@@ -36,7 +36,7 @@ class Main:
 
     def get_data_from_exchangers(self):
         ## get info from exchangers for cryptocurrencies
-        exchangers_data = self.exchangers.get_data_from_exchangers()
+        exchangers_data = self.exchanges.get_data_from_exchangers()
 
         ## dump all data to json file
         self.json.wright_to_json_exchangers_data(exchangers_data)

@@ -6,7 +6,7 @@ from datetime import datetime
 from requests.exceptions import RequestException
 from MexcClient.Utils.Signature import generate_signature
 
-from exchanges.ex_base import Exchanger
+from exchangers.ex_base import Exchanger
 
 from dotenv import load_dotenv
 

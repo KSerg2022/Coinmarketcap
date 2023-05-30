@@ -7,7 +7,7 @@ import os
 from binance.client import Client
 from binance.exceptions import BinanceAPIException
 
-from exchanges.ex_base import Exchanger
+from exchangers.ex_base import Exchanger
 
 from dotenv import load_dotenv
 
