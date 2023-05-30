@@ -1,3 +1,6 @@
+"""
+https://www.gate.io/docs/developers/apiv4/#gate-api-v4-v4-46-0
+"""
 import os
 import requests
 import time
