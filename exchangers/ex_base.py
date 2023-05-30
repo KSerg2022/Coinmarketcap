@@ -1,5 +1,3 @@
-import os
-import json
 
 from dotenv import load_dotenv
 
@@ -20,4 +18,9 @@ class Exchanger:
         except (Exception, *exception) as e:
             print(f'{exchanger.upper()} -- {e}')
             return {}
+        try:
+            if response.status_code != 200:
+                return {}
+        except AttributeError:
+            pass
         return response

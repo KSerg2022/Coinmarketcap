@@ -20,6 +20,7 @@ class ExMexc(Exchanger):
     """"""
     host = "https://api.mexc.com"
     prefix = "/api/v3/"
+    url = 'account'
 
     def __init__(self):
         self.apiKey = os.environ.get('MEXC_API_KEY')
@@ -37,19 +38,19 @@ class ExMexc(Exchanger):
 
     def get_account(self):
         """"""
-        url = 'account'
         currencies_account = self._get_response(self._get_request,
                                                 self.exchanger,
-                                                (RequestException, ),
-                                                url=url)
-
-        currencies = self._normalize_data(currencies_account)
+                                                (RequestException, )
+                                                )
+        currencies = self._normalize_data(currencies_account.json())
         return currencies
 
-    def _get_request(self, url):
+    def _get_request(self):
         """"""
         sign_params = self.gen_sign()
-        return requests.request('GET', self.host + self.prefix + url, headers=self.headers, params=sign_params).json()
+        return requests.request('GET', self.host + self.prefix + self.url,
+                                headers=self.headers,
+                                params=sign_params)
 
     def _normalize_data(self, currencies_account):
         """"""

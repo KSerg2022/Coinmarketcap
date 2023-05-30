@@ -50,19 +50,18 @@ class ExGate(Exchanger):
     def get_account(self):
         """"""
         url = '/spot/accounts'
-        # currencies_account = self._get_request(url)
         currencies_account = self._get_response(self._get_request,
                                                 self.exchanger,
                                                 (RequestException,),
                                                 url=url)
-        currencies = self._normalize_data(currencies_account)
+        currencies = self._normalize_data(currencies_account.json())
         return currencies
 
     def _get_request(self, url):
         """"""
         sign_headers = self.gen_sign('GET', self.prefix + url, self.query_param)
         self.headers.update(sign_headers)
-        return requests.request('GET', self.host + self.prefix + url, headers=self.headers).json()
+        return requests.request('GET', self.host + self.prefix + url, headers=self.headers)
 
     def _normalize_data(self, currencies_account):
         """"""
