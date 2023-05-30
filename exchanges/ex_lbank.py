@@ -4,12 +4,14 @@ import os
 from exchanges.handlers.LBank import LBankAPI
 from exchanges.handlers.LBank import LBankError
 
+from exchanges.ex_base import Exchanger
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-class ExLbank:
+class ExLbank(Exchanger):
     """"""
 
     def __init__(self):
@@ -20,12 +22,10 @@ class ExLbank:
 
     def get_account(self):
         """"""
-        try:
-            currencies_account = self.api.user_assets()
-        except LBankError as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            currencies_account = {}
-        currencies = self._normalize_data(currencies_account)
+        account = self._get_response(self.api.user_assets,
+                                     self.exchanger,
+                                     (LBankError, ))
+        currencies = self._normalize_data(account)
         return currencies
 
     def _normalize_data(self, currencies_account):

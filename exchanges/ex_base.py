@@ -8,9 +8,6 @@ load_dotenv()
 
 class Exchanger:
 
-    # def __init__(self):
-    #     pass
-
     @staticmethod
     def _get_response(fn, exchanger=None, exception=None,  accountType=None, url=None) -> dict | list:
         try:

@@ -3,18 +3,18 @@ https://dev.binance.vision/t/ip-whitelist-does-not-have-effect/2767
 https://algotrading101.com/learn/binance-python-api-guide/
 """
 import os
-import json
+
+from binance.client import Client
+from binance.exceptions import BinanceAPIException
+
+from exchanges.ex_base import Exchanger
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# from binance.spot import Spot
-from binance.client import Client
-from binance.exceptions import BinanceAPIException
 
-
-class ExBinance:
+class ExBinance(Exchanger):
     host = 'https://api.binance.com'
 
     def __init__(self):
@@ -25,24 +25,22 @@ class ExBinance:
         self.exchanger = os.path.splitext(os.path.basename(__file__))[0][3:]
 
     def get_futures_coin_account(self):
-        futures_coin_account = self._get_response(self.coin_m.futures_coin_account)
+        futures_coin_account = self._get_response(self.coin_m.futures_coin_account,
+                                                  self.exchanger,
+                                                  (BinanceAPIException, ),
+                                                  )
         if not futures_coin_account:
             return futures_coin_account
         return [x for x in futures_coin_account['assets'] if float(x['walletBalance']) != 0]
 
     def get_spot_account(self) -> list[dict]:
-        spot_account = self._get_response(self.coin_m.get_account)
+        spot_account = self._get_response(self.coin_m.get_account,
+                                          self.exchanger,
+                                          (BinanceAPIException,)
+                                          )
         if not spot_account:
             return spot_account
         return [x for x in spot_account['balances'] if float(x['free']) != 0 or float(x['locked']) != 0]
-
-    def _get_response(self, fn) -> dict | list:
-        try:
-            response = fn()
-        except BinanceAPIException as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            return {}
-        return response
 
     def get_account(self):
         spot_account = self.get_spot_account()

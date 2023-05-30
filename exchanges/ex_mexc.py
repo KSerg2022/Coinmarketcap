@@ -6,12 +6,14 @@ from datetime import datetime
 from requests.exceptions import RequestException
 from MexcClient.Utils.Signature import generate_signature
 
+from exchanges.ex_base import Exchanger
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-class ExMexc:
+class ExMexc(Exchanger):
     """"""
     host = "https://api.mexc.com"
     prefix = "/api/v3/"
@@ -33,19 +35,18 @@ class ExMexc:
     def get_account(self):
         """"""
         url = 'account'
-        currencies_account = self._get_request(url)
+        currencies_account = self._get_response(self._get_request,
+                                                self.exchanger,
+                                                (RequestException, ),
+                                                url=url)
+
         currencies = self._normalize_data(currencies_account)
         return currencies
 
     def _get_request(self, url):
         """"""
         sign_params = self.gen_sign()
-        try:
-            r = requests.request('GET', self.host + self.prefix + url, headers=self.headers, params=sign_params)
-            return r.json()
-        except RequestException as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            return {}
+        return requests.request('GET', self.host + self.prefix + url, headers=self.headers, params=sign_params).json()
 
     def _normalize_data(self, currencies_account):
         """"""

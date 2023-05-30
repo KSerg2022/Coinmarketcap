@@ -1,15 +1,17 @@
 import os
 
-from collections import defaultdict
-from dotenv import load_dotenv
-load_dotenv()
-
 import okx.Account as Account
 import okx.Funding as Funding
 from okx.exceptions import OkxAPIException, OkxParamsException, OkxRequestException
 
+from exchanges.ex_base import Exchanger
 
-class ExOkx:
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+class ExOkx(Exchanger):
     host = "https://www.okx.com"
 
     def __init__(self):
@@ -30,19 +32,15 @@ class ExOkx:
 
     def get_funding(self):
         """"""
-        return self._get_response(self.funding.get_balances)
+        return self._get_response(self.funding.get_balances, self.exchanger, (OkxAPIException,
+                                                                              OkxParamsException,
+                                                                              OkxRequestException))
 
     def get_account_trading(self):
         """"""
-        return self._get_response(self.account.get_account_balance)
-
-    def _get_response(self, fn) -> dict | list:
-        try:
-            response = fn()
-        except OkxAPIException as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            return {}
-        return response
+        return self._get_response(self.account.get_account_balance, self.exchanger, (OkxAPIException,
+                                                                                     OkxParamsException,
+                                                                                     OkxRequestException))
 
     def get_account(self):
         """"""
@@ -80,4 +78,3 @@ if __name__ == '__main__':
     currencies = ExOkx()
     data = currencies.get_account()
     print(data)
-

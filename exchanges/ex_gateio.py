@@ -6,11 +6,14 @@ import hmac
 
 from requests.exceptions import RequestException
 
+from exchanges.ex_base import Exchanger
+
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
-class ExGate:
+class ExGate(Exchanger):
     """"""
 
     host = "https://api.gateio.ws"
@@ -36,12 +39,19 @@ class ExGate:
     def get_total_balance(self):
         """in USDT"""
         url = '/wallet/total_balance'
-        return self._get_request(url)
+        return self._get_response(self._get_request,
+                                  self.exchanger,
+                                  (RequestException,),
+                                  url=url)
 
     def get_account(self):
         """"""
         url = '/spot/accounts'
-        currencies_account = self._get_request(url)
+        # currencies_account = self._get_request(url)
+        currencies_account = self._get_response(self._get_request,
+                                                self.exchanger,
+                                                (RequestException,),
+                                                url=url)
         currencies = self._normalize_data(currencies_account)
         return currencies
 
@@ -49,12 +59,7 @@ class ExGate:
         """"""
         sign_headers = self.gen_sign('GET', self.prefix + url, self.query_param)
         self.headers.update(sign_headers)
-        try:
-            r = requests.request('GET', self.host + self.prefix + url, headers=self.headers)
-            return r.json()
-        except RequestException as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            return {}
+        return requests.request('GET', self.host + self.prefix + url, headers=self.headers).json()
 
     def _normalize_data(self, currencies_account):
         """"""
@@ -72,4 +77,5 @@ class ExGate:
 
 if __name__ == '__main__':
     currencies = ExGate()
-    currencies.get_account()
+    result = currencies.get_account()
+    print(result)

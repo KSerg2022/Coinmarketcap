@@ -1,14 +1,21 @@
+"""
+
+"""
 import os
 
 from collections import defaultdict
-from dotenv import load_dotenv
-load_dotenv()
 
 from pybit.unified_trading import HTTP
-from pybit.exceptions import FailedRequestError
+from pybit.exceptions import FailedRequestError, InvalidRequestError, UnauthorizedExceptionError
+
+from exchanges.ex_base import Exchanger
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-class ExBybit:
+class ExBybit(Exchanger):
     """"""
 
     def __init__(self):
@@ -19,21 +26,18 @@ class ExBybit:
 
     def get_account_spot(self):
         """"""
-        try:
-            response = self.session.get_spot_asset_info()
-            return response
-        except (RuntimeError, FailedRequestError) as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            return {}
+        return self._get_response(self.session.get_spot_asset_info,
+                                  self.exchanger,
+                                  (FailedRequestError, InvalidRequestError, UnauthorizedExceptionError,)
+                                  )
 
     def get_account_margin(self):
         """"""
-        try:
-            response = self.session.get_wallet_balance(accountType="CONTRACT")
-            return response
-        except (RuntimeError, FailedRequestError) as e:
-            print(f'{self.exchanger.upper()} -- {e}')
-            return {}
+        return self._get_response(self.session.get_wallet_balance,
+                                  self.exchanger,
+                                  (FailedRequestError, InvalidRequestError, UnauthorizedExceptionError,),
+                                  accountType="CONTRACT",
+                                  )
 
     def get_account(self):
         account_spot = self.get_account_spot()
