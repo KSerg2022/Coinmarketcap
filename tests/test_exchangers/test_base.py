@@ -49,7 +49,7 @@ class TestBase:
     def assertEqual(self, param, param1):
         pass
 
-    def _check_data(self, result):
+    def _check_data_in_test_base(self, result):
         self.assertIsInstance(result, dict)
         self.assertIsInstance(list(result.values())[0], list)
         self.assertIn(self.exchanger.exchanger, result)
@@ -57,11 +57,11 @@ class TestBase:
         self.assertIn('bal', list(result.values())[0][0])
 
     def test_get_account(self):
-        self._check_data(
+        self._check_data_in_test_base(
             self.exchanger.get_account())
 
     def test_normalize_data(self):
-        self._check_data(
+        self._check_data_in_test_base(
             self.exchanger._normalize_data(self.test_data))
 
     def test_normalize_with_empty_data(self):
