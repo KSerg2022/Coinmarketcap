@@ -168,3 +168,4 @@ cython_debug/
 coinmarketcap
 /settings.py
 **/_trial_temp/**
+**/using/**
