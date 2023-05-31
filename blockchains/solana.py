@@ -26,7 +26,7 @@ class Solana(Base):
 
     def get_account(self) -> dict[dict]:
         """"""
-        response = self._get_request(self.host, self.params, self.headers)
+        response = self._get_request(url=self.host, params=self.params, headers=self.headers)
         try:
             message = response['message']
             print(f"Error - {response['result']}, host={self.host}")
