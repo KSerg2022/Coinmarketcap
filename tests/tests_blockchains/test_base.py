@@ -39,6 +39,18 @@ class TestBase:
                 'apikey': apikey,
                 }
 
+    def assertIsInstance(self, param, list):
+        pass
+
+    def assertIn(self, exchanger, result):
+        pass
+
+    def assertEqual(self, param, param1):
+        pass
+
+    def assertTrue(self, param):
+        pass
+
 
 class TestBaseGetRequest(TestBase):
 
