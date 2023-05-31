@@ -2,20 +2,40 @@ import unittest
 import time
 
 from exchangers.ex_gateio import ExGate
+from .test_base import TestBase
 
 
-class TestExMexc(unittest.TestCase):
+class TestExMexc(unittest.TestCase, TestBase):
 
     def setUp(self) -> None:
+        super().setUp()
         self.exchanger = ExGate()
+        self.url = '/spot/accounts'
+
+        self.api_key_wrong = 'wrong'
+        self.api_secret_wrong = 'wrong'
+
+        self.url_wrong = '/spot/wrong'
+        self.host_wrong = 'https://api.gateio.ws/wrong'
+        self.prefix_wrong = '/api/v1/'
+        self.test_data_empty = {}
+        self.test_data = [{'currency': 'FIRO', 'available': '5', 'locked': '0'},
+                          {'currency': 'POLS', 'available': '10', 'locked': '5'}
+                          ]
+        self.apiSecret_wrong = None
+        self.url_other = None
 
     def tearDown(self) -> None:
         del self.exchanger
 
+    def _get_error_404(self, data):
+        result = self.exchanger._get_request(data)
+
+        self.assertEqual(result.status_code, 404)
+
     def test_gen_sign(self):
-        url = '/spot/accounts'
         result = self.exchanger.gen_sign('GET',
-                                         self.exchanger.host + url,
+                                         self.exchanger.host + self.url,
                                          self.exchanger.query_param)
 
         self.assertIn('KEY', result)
@@ -30,32 +50,8 @@ class TestExMexc(unittest.TestCase):
         self.assertIn('spot', list(result.values())[0])
         self.assertIn('total', result.keys())
 
-    def test_get_account(self):
-        result = self.exchanger.get_account()
-
-        self.assertIsInstance(result, dict)
-        self.assertIsInstance(list(result.values())[0], list)
-
-    def test_normalize_data(self):
-        test_data = [{'currency': 'FIRO', 'available': '5', 'locked': '0'},
-                     {'currency': 'POLS', 'available': '10', 'locked': '5'}
-                     ]
-        result = self.exchanger._normalize_data(test_data)
-
-        self.assertIn(self.exchanger.exchanger, result)
-        self.assertIn('coin', list(result.values())[0][0])
-        self.assertIn('bal', list(result.values())[0][0])
-
-    def test_normalize_with_empty_data(self):
-        test_data = {}
-        result = self.exchanger._normalize_data(test_data)
-
-        self.assertIn(self.exchanger.exchanger, result)
-        self.assertEqual(result[self.exchanger.exchanger], {})
-
     def test_get_request(self):
-        url = '/spot/accounts'
-        result = self.exchanger._get_request(url).json()
+        result = self.exchanger._get_request(self.url).json()
 
         self.assertIsInstance(result, list)
         self.assertNotEqual(len(result), 0)
@@ -64,40 +60,31 @@ class TestExMexc(unittest.TestCase):
         self.assertIn('locked', result[0])
 
     def test_get_request_with_wrong_key(self):
-        self.exchanger.key = 'wrong'
-        url = '/spot/accounts'
-        result = self.exchanger._get_request(url).json()
+        self._set_wrong_api()
+        result = self.exchanger._get_request(self.url).json()
 
         self.assertEqual(result['message'], 'Invalid key provided')
         self.assertEqual(result['label'], 'INVALID_KEY')
 
     def test_get_request_with_wrong_secret(self):
-        self.exchanger.secret = 'wrong'
-        url = '/spot/accounts'
-        result = self.exchanger._get_request(url).json()
+        self._set_wrong_secret()
+        result = self.exchanger._get_request(self.url).json()
 
         self.assertEqual(result['message'], 'Signature mismatch')
         self.assertEqual(result['label'], 'INVALID_SIGNATURE')
 
     def test_get_request_with_wrong_host(self):
-        self.exchanger.host = "https://api.gateio.ws/wrong"
-        url = '/spot/accounts'
-        result = self.exchanger._get_request(url)
-
-        self.assertEqual(result.status_code, 404)
+        self._set_wrong_host()
+        self._get_error_404(self.url)
 
     def test_get_request_with_wrong_prefix(self):
-        self.exchanger.prefix = "/api/v1/"
-        url = '/spot/accounts'
-        result = self.exchanger._get_request(url)
-
-        self.assertEqual(result.status_code, 404)
+        self._set_wrong_prefix()
+        self._get_error_404(self.url)
 
     def test_get_request_with_wrong_url(self):
-        url = '/spot/wrong'
-        result = self.exchanger._get_request(url)
+        self._get_error_404(self.url_wrong)
 
-        self.assertEqual(result.status_code, 404)
+
 
 
 if __name__ == '__main__':
