@@ -1,0 +1,54 @@
+API_COINMARCETCAP=
+
+
+#Exchangers
+# Binance exchange
+BINANCE_API_KEY=
+BINANCE_API_SECRET_KEY=
+
+# OKX exchange
+OKX_API_KEY=
+OKX_API_SECRET_KEY=
+OKX_PWD=
+
+# GATEIO exchange
+GATE_API_KEY=
+GATE_API_SECRET_KEY=
+
+# MEXC exchange
+MEXC_API_KEY=
+MEXC_API_SECRET_KEY=
+
+# LBANK exchange
+LBANK_API_KEY=
+LBANK_API_SECRET_KEY=
+
+# BYBIT exchange
+BYBIT_API_KEY=
+BYBIT_API_SECRET_KEY=
+
+
+#Blockcnains
+WALLET_ADDRESS=
+
+#bsc
+#https://bscscan.com/
+BSCSCAN_API_KEY=
+
+
+#ftm
+#https://ftmscan.com/
+FTMSCAN_API_KEY=
+
+#ether
+#https://etherscan.io/
+ETHERSCAN_API_KEY=
+
+#polygon
+#https://polygonscan.com/
+POLYGONSCAN_API_KEY=
+
+#solana
+#https://solscan.io/
+SOLANA_API_KEY=
+WALLET_SOLANA=
