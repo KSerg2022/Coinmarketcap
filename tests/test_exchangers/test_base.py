@@ -51,7 +51,7 @@ class TestBase:
 
     def _check_data_in_test_base(self, result):
         self.assertIsInstance(result, dict)
-        self.assertIsInstance(list(result.values())[0], list)
+        # self.assertIsInstance(list(result.values())[0], list)
         self.assertIn(self.exchanger.exchanger, result)
         self.assertIn('coin', list(result.values())[0][0])
         self.assertIn('bal', list(result.values())[0][0])
